@@ -4,16 +4,11 @@
 
 import MySQLdb
 import time
-from datetime import datetime
 
 class Runner:
 	#Constructor getting the file url
 	def __init__(self, url):
 		self url = url
-	
-	def timer(self):
-		
-		return timer
 	
 	#Start reading data end send to db
 	#in a set interval
@@ -30,6 +25,9 @@ class Runner:
 		#Send data to database
 		QueryDB = QueryDB(db)
 		QueryDB.query(result)
+		
+		#Close connection to database
+		DBConnect.disconnect()
 
 		
 Runner = Runner("../data/test.json")

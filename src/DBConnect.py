@@ -11,15 +11,15 @@ class DBConnect:
 	
 	#Connect to database
 	def connect(self):
-		self.db = MySQLdb.connect(host = ip,
-							 user = username
-							 passwd = password
-							 db = db_name)
-	
-	#Disconnect from Database
-	def disconnect(self):
-		self.db.close()
+		self.db = MySQLdb.connect(host = "mysql.stud.ntnu.no",
+							 user = "skyclouds_admin"
+							 passwd = "blacktap"
+							 db = "skyclouds_backtap")
 	
 	#Get the database connection object
 	def getConnection(self):
 		return self.db
+		
+	#Disconnect from Database
+	def disconnect(self):
+		self.db.close()
