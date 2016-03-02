@@ -25,8 +25,7 @@ class FileReader(Thread):
             self.results = dd(list)
             self.lock = RLock()
 
-            self.speed_up = 4.0
-
+            self.speed_up = 1.0
 
         def change_speed_by(self, k):
             self.speed_up *= k
@@ -106,105 +105,103 @@ class GUI(tkinter.Tk):
     def update_image(self):
         lock, data = self.stream.get_data()
         with lock:
-            if len(data['longitude']) > 0 and len(data['latitude']) > 0:
-                lat = data['latitude'][-1][0]
-                lng = data['longitude'][-1][0]
+            lat = data['latitude'][-1][0] if len(data['latitude']) > 0 else None
+            lng = data['longitude'][-1][0] if len(data['longitude']) > 0 else None
 
-                do_update = True
+            speed = 1.6 * data['vehicle_speed'][-1][0] if len(data['vehicle_speed']) > 0 else None
+            speed_limit = data['speed_limit'][-1][0] if len(data['speed_limit']) > 0 else None
+        data = None # delete reference
 
-                if self.last_position is None:
-                    self.last_position = (lat, lng)
-                elif self.last_position[0] != lat or self.last_position[1] != lng:
-                    r = [lng - self.last_position[1], lat - self.last_position[0]] # retningsvektor
-                    ortog = [1, 1] # orthogonal vektor
-                    if r[0] == 0:
-                        ortog[1] = 0
-                    elif r[1] == 0:
-                        ortog[0] = 0
-                    else:
-                        ortog[1] = -r[0] / r[1]
-                    r = np.array(r)             # Linear algebra vector
-                    ortog = np.array(ortog)
+        if lat is not None and lng is not None:
+            do_update = True
 
-                    r = r * 20 / np.linalg.norm(r)              # Normaliserer til lengde 20
-                    ortog = ortog * 20 / np.linalg.norm(ortog)
-
-                    r[1] *= -1
-                    ortog[1] *= -1
-
-                    self.marker = list(self.center - 0.5*r - ortog*0.3) + list(self.center + r*0.5) + list(self.center - 0.5*r + ortog*0.3)
-                    self.last_position = (lat, lng)
-
-                    # START TURNING LOGIC
-                    self.coord_mem.append( (lat, lng))
-                    if self.coord_mem_cap < len(self.coord_mem):
-                        self.coord_mem.popleft()
-
-                    address = self.street_address # in case of failure
-                    try:
-                        response = self.cli.reverse_geocode((lat, lng), result_type = "route")
-                        response = response[0]
-                        for line in response['address_components']:
-                            if 'route' in line['types']:
-                                address = line['long_name']
-                                break
-                    except (e):
-                        print(e)
-
-                    if self.street_address is None:
-                        self.street_address = address
-                    elif address != self.street_address:
-                        self.turning = {'time' : time.time(), 'coords' : list(self.coord_mem)}
-                        self.street_address = address
-                        print("TURNING")
-
-                    if self.turning: # Evaluate as bool
-                        if len(self.turning['coords']) > 2 and 0.0003 < \
-                        np.linalg.norm(np.array(self.turning['coords'][-1] - np.array(self.turning['coords'][0]))):
-                            ##5 < time.time() - self.turning['time']: # Mark only for two seconds
-                            self.turning = {}
-                        else:
-                            self.turning['coords'].append( (lat, lng) )
+            if self.last_position is None:
+                self.last_position = (lat, lng)
+            elif self.last_position[0] != lat or self.last_position[1] != lng:
+                r = [lng - self.last_position[1], lat - self.last_position[0]] # retningsvektor
+                ortog = [1, 1] # orthogonal vektor
+                if r[0] == 0:
+                    ortog[1] = 0
+                elif r[1] == 0:
+                    ortog[0] = 0
                 else:
-                    do_update = False
+                    ortog[1] = -r[0] / r[1]
+                r = np.array(r)             # Linear algebra vector
+                ortog = np.array(ortog)
 
-                if do_update:
-                    #start = time.time()
-                    self.img = self.fetch_img(data['latitude'][-1][0], data['longitude'][-1][0])
-                    #print("Downloaded image in " + format((time.time() - start) * 1000, '.1f') + " ms.")
-                    self.photo_image = ImageTk.PhotoImage(self.img)
+                r = r * 20 / np.linalg.norm(r)              # Normaliserer til lengde 20
+                ortog = ortog * 20 / np.linalg.norm(ortog)
+
+                r[1] *= -1
+                ortog[1] *= -1
+
+                self.marker = list(self.center - 0.5*r - ortog*0.3) + list(self.center + r*0.5) + list(self.center - 0.5*r + ortog*0.3)
+                self.last_position = (lat, lng)
+
+                # START TURNING LOGIC
+                self.coord_mem.append( (lat, lng))
+                if self.coord_mem_cap < len(self.coord_mem):
+                    self.coord_mem.popleft()
+
+                address = self.street_address # in case of failure
+                try:
+                    response = self.cli.reverse_geocode((lat, lng), result_type = "route")
+                    response = response[0]
+                    for line in response['address_components']:
+                        if 'route' in line['types']:
+                            address = line['long_name']
+                            break
+                except (e):
+                    print(e)
+
+                if self.street_address is None:
+                    self.street_address = address
+                elif address != self.street_address:
+                    self.turning = {'time' : time.time(), 'coords' : list(self.coord_mem)}
+                    self.street_address = address
+                    print("TURNING")
+
+                if self.turning: # Evaluate as bool
+                    if len(self.turning['coords']) > 2 and 0.0003 < \
+                    np.linalg.norm(np.array(self.turning['coords'][-1] - np.array(self.turning['coords'][0]))):
+                        ##5 < time.time() - self.turning['time']: # Mark only for two seconds
+                        self.turning = {}
+                    else:
+                        self.turning['coords'].append( (lat, lng) )
+            else:
+                do_update = False
+
+            if do_update:
+                self.img = self.fetch_img(lat, lng)
+
+                self.photo_image = ImageTk.PhotoImage(self.img)
                     
                 self.canvas.create_image(250, 250, image = self.photo_image)
 
                 self.canvas.create_polygon(self.marker, fill="blue")
 
-                self.canvas.create_rectangle(0, 0, 150, 80, fill="white")
-                self.canvas.create_text((10, 5), anchor = "nw", text="Play speed: " + \
-                        format(self.stream.get_speed(), '.1f')+"x")
-                
-                speed = speed_limit = None
-                if len(data['vehicle_speed']) > 0:
-                    speed = data['vehicle_speed'][-1][0]*1.6
-                if len(data['speed_limit']) > 0:
-                    speed_limit = data['speed_limit'][-1][0]
+            self.canvas.create_rectangle(0, 0, 150, 80, fill="white")
 
-                self.canvas.create_text((10, 20), anchor = "nw", text="Velocity: " + \
-                        (format(speed, '.1f') + " km/h" if speed is not None else "?"))
+            self.canvas.create_text((10, 5), anchor = "nw", text="Play speed: " + \
+                    format(self.stream.get_speed(), '.1f')+"x")
+            
+            self.canvas.create_text((10, 20), anchor = "nw", text="Velocity: " + \
+                    (format(speed, '.1f') + " km/h" if speed is not None else "?"))
 
-                self.canvas.create_text((10, 35), anchor = "nw", text="Speed limit: " + \
-                        (format(speed_limit, '.1f') if speed_limit is not None else "?"))
+            self.canvas.create_text((10, 35), anchor = "nw", text="Speed limit: " + \
+                    (format(speed_limit, '.1f') if speed_limit is not None else "?"))
                 
-                speeding = "Unknown"
-                color = "black"
-                if speed is not None and speed_limit is not None:
-                    if speed <= speed_limit:
-                        speeding = "No"
-                        color = "green"
-                    else:
-                        speeding = "Yes"
-                        color = "red"
-                        
-                self.canvas.create_text((10, 50), anchor = "nw", text="Speeding: " + speeding, fill = color)
+            speeding = "Unknown"
+            color = "black"
+            if speed is not None and speed_limit is not None:
+                if speed <= speed_limit:
+                    speeding = "No"
+                    color = "green"
+                else:
+                    speeding = "Yes"
+                    color = "red"
+                    
+            self.canvas.create_text((10, 50), anchor = "nw", text="Speeding: " + speeding, fill = color)
 
         self.after(200, self.update_image)
 
