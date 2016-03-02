@@ -189,7 +189,7 @@ class GUI(tkinter.Tk):
                     speed_limit = data['speed_limit'][-1][0]
 
                 self.canvas.create_text((10, 20), anchor = "nw", text="Velocity: " + \
-                        (format(speed, '.1f') if speed is not None else "?"))
+                        (format(speed, '.1f') + " km/h" if speed is not None else "?"))
 
                 self.canvas.create_text((10, 35), anchor = "nw", text="Speed limit: " + \
                         (format(speed_limit, '.1f') if speed_limit is not None else "?"))

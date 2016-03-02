@@ -43,7 +43,7 @@ def add_speed_limits(filename):
                         if limit == last:
                             continue
 
-                        speedlimit = {"name" : "speedlimit", "value" : limit,
+                        speedlimit = {"name" : "speed_limit", "value" : limit,
                                 "timestamp" : json.loads(buff[0])["timestamp"]}
 
                         if MIN_SPEED_LIMIT <= limit: # Else, reset but not write
@@ -58,7 +58,7 @@ def add_speed_limits(filename):
             limit = round(avg / 10.0) * 10
             if limit != last:
 
-                speedlimit = {"name" : "speedlimit", "value" : limit,
+                speedlimit = {"name" : "speed_limit", "value" : limit,
                         "timestamp" : json.loads(buff[0])["timestamp"]}
 
                 if MIN_SPEED_LIMIT <= limit: # Else, reset but not write
@@ -68,4 +68,4 @@ def add_speed_limits(filename):
             for e in buff:
                 out.write(e)
 
-add_speed_limits("uptown-west.json")
+add_speed_limits("downtown-east.json")
