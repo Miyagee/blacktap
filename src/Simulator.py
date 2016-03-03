@@ -8,7 +8,6 @@ import requests
 import tkinter
 import numpy as np
 import googlemaps
-from sys import argv
 from threading import Thread, RLock
 from collections import deque, defaultdict as dd
 from PIL import ImageFile, ImageTk, Image
@@ -154,7 +153,7 @@ class GUI(tkinter.Tk):
                         if 'route' in line['types']:
                             address = line['long_name']
                             break
-                except (e):
+                except Exception as e:
                     print(e)
 
                 if self.street_address is None:
