@@ -3,6 +3,7 @@ from math import sqrt
 
 MIN_SPEED_LIMIT = 30
 
+
 def add_speed_limits(filename):
     """Filename ends with .json"""
 
@@ -15,26 +16,26 @@ def add_speed_limits(filename):
         mean_of_squares = None
         last = None
 
-        normalZ = 1.96 # approximately 5 % chance ? 
+        normalZ = 1.96  # approximately 5 % chance ?
 
-        #Variance:
-        # 1 / n * [sum of speeds^2] - [speed mean] ^2 
+        # Variance:
+        # 1 / n * [sum of speeds^2] - [speed mean] ^2
 
-        buff = [] # buffer for holding lines to be written
+        buff = []  # buffer for holding lines to be written
 
         for line in inp:
             data = json.loads(line)
             buff.append(line)
             if data["name"] == "vehicle_speed":
-                speed = data["value"] * 1.609344 # miles / h to km/h
+                speed = data["value"] * 1.609344  # miles / h to km/h
                 if avg is None:
                     avg = speed
                     mean_of_squares = speed ** 2
                     var = 0.0
                     n = 1.0
                 else:
-                    avg = (avg * n + speed) / (n+1)
-                    mean_of_squares = (mean_of_squares *n + speed**2) / (n+1)
+                    avg = (avg * n + speed) / (n + 1)
+                    mean_of_squares = (mean_of_squares * n + speed**2) / (n + 1)
                     n += 1.0
                     var = mean_of_squares - avg**2
 
@@ -43,10 +44,10 @@ def add_speed_limits(filename):
                         if limit == last:
                             continue
 
-                        speedlimit = {"name" : "speed_limit", "value" : limit,
-                                "timestamp" : json.loads(buff[0])["timestamp"]}
+                        speedlimit = {"name": "speed_limit", "value": limit,
+                                      "timestamp": json.loads(buff[0])["timestamp"]}
 
-                        if MIN_SPEED_LIMIT <= limit: # Else, reset but not write
+                        if MIN_SPEED_LIMIT <= limit:  # Else, reset but not write
                             out.write(json.dumps(speedlimit) + "\n")
                             last = limit
                             print("wrote speed lim:", last)
@@ -58,10 +59,10 @@ def add_speed_limits(filename):
             limit = round(avg / 10.0) * 10
             if limit != last:
 
-                speedlimit = {"name" : "speed_limit", "value" : limit,
-                        "timestamp" : json.loads(buff[0])["timestamp"]}
+                speedlimit = {"name": "speed_limit", "value": limit,
+                              "timestamp": json.loads(buff[0])["timestamp"]}
 
-                if MIN_SPEED_LIMIT <= limit: # Else, reset but not write
+                if MIN_SPEED_LIMIT <= limit:  # Else, reset but not write
                     out.write(json.dumps(speedlimit) + "\n")
                     last = limit
                     print("wrote speed lim:", last)
