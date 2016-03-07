@@ -92,16 +92,6 @@ class FileReader(Thread):
                 self.results[json_data['name']].append( (json_data["value"], json_data["timestamp"]) )
             i += 1
 
-        for i in range(len(data)):
-            json_data = json.loads(data[i])
-
-            if old_timestamp is None:  # Initial case
-                old_timestamp = json_data["timestamp"]
-            old_timestamp = self.sleeper(json_data["timestamp"], old_timestamp)
-
-            with self.lock:
-                self.results[json_data['name']].append((json_data["value"], json_data["timestamp"]))
-
     # Getter to get all results
     def get_data(self):
         return self.lock, self.results
@@ -193,7 +183,7 @@ class GUI(tkinter.Tk):
 
             speed = 1.6 * data['vehicle_speed'][-1][0] if len(data['vehicle_speed']) > 0 else None
             speed_limit = data['speed_limit'][-1][0] if len(data['speed_limit']) > 0 else None
-        data = None  # delete reference
+        del data # delete reference
 
         if lat is not None and lng is not None:
 
@@ -203,9 +193,9 @@ class GUI(tkinter.Tk):
             elif self.last_position[0] != lat or self.last_position[1] != lng:
                 self.last_direction = (lat - self.last_position[0], lng - self.last_position[1])
                 self.last_position = (lat, lng)
-                #self.check_turning(lat, lng)
                 self.interpolate_time = time.time()
                 self.inter_lat, self.inter_lng = lat, lng
+                #self.check_turning(lat, lng)
             else:
                 if self.last_speed is not None and speed is not None and self.last_direction is not None:
                     self.interpolate(speed)
@@ -220,7 +210,7 @@ class GUI(tkinter.Tk):
     def interpolate(self, speed):
         r = np.array(self.last_direction)
         r /= np.linalg.norm(r)
-        r *= 0.5 / 3.6 / 2.5 * (self.last_speed + speed) * (time.time() - self.interpolate_time) * self.stream.get_speed() # 1.9 is a magic constant :-(
+        r *= 0.5 / 3.6 / 2.5 * (self.last_speed + speed) * (time.time() - self.interpolate_time) * self.stream.get_speed() # 2.5 is a magic constant :-(
 
         self.interpolate_time = time.time()
         self.inter_lat += r[0] / 111111
