@@ -1,103 +1,18 @@
-# Written By: Christoffer A. Nilsen
-# Date: 23/02/2016
-# Purpose: Read in data from blackbox/file
-
-import json
 import time
 import requests
 import tkinter
 import numpy as np
 import googlemaps
 import os
-from sys import argv
-from threading import Thread, RLock
-from collections import deque, defaultdict as dd
+
+from threading import Thread
+from collections import deque
 from PIL import ImageFile, ImageTk, Image
 from math import cos, pi
-
 from maps import Maps
+from filereader import FileReader
 
-
-class FileReader(Thread):
-
-    # Constructor
-    def __init__(self, url):
-        super(FileReader, self).__init__()
-        self.daemon = True
-
-        self.url = url
-        self.results = dd(list)
-        self.lock = RLock()
-
-        self.speed_up = 1.0
-
-        #For creating data subsets for test making:
-        self.record = False
-        self.record_buffer = []
-        self.record_index = 1
-        self.filename_prefix = "records/record"
-        self.rewind = None
-
-    def change_speed_by(self, k):
-        self.speed_up *= k
-
-    def get_speed(self):
-        return self.speed_up
-
-    # Simulate time delay between input
-    def sleeper(self, cur_timestamp, old_timestamp):
-        if cur_timestamp > old_timestamp:
-            time.sleep((cur_timestamp - old_timestamp) / self.speed_up)
-        return cur_timestamp
-
-    # Opens and read the file with date input
-    def run(self):
-
-        data = []
-        old_timestamp = None
-
-        with open(self.url) as f:
-            data.extend(f.readlines())
-        i = 0
-        while i < (len(data)):
-            json_data = json.loads(data[i])
-
-            if self.record:
-                self.record_buffer.append(data[i])
-            elif not self.record and self.record_buffer:
-                filename = self.filename_prefix + str(self.record_index)
-                self.record_index += 1
-                while os.path.isfile(filename):
-                    filename = self.filename_prefix + str(self.record_index)
-                    self.record_index += 1
-
-                open(filename, "w").write("".join(self.record_buffer))
-                self.record_buffer = []
-            elif self.rewind:
-                i -= 1
-                json_data = json.loads(data[i])
-                now = json_data['timestamp']
-                while 0 < i and json_data['timestamp'] > now - self.rewind:
-                    i -= 1
-                    json_data = json.loads(data[i])
-                    self.results[json_data['name']].pop()
-                old_timestamp = None
-                self.rewind = None
-
-            if old_timestamp is None: # Initial case
-                old_timestamp = json_data["timestamp"]
-            old_timestamp = self.sleeper(json_data["timestamp"], old_timestamp)
-
-            with self.lock:
-                self.results[json_data['name']].append( (json_data["value"], json_data["timestamp"]) )
-            i += 1
-
-    # Getter to get all results
-    def get_data(self):
-        return self.lock, self.results
-
-
-class GUI(tkinter.Tk):
+class TripSimulator(tkinter.Tk):
     def __init__(self, *files):
 
         super(GUI, self).__init__()
@@ -183,6 +98,8 @@ class GUI(tkinter.Tk):
 
             speed = 1.6 * data['vehicle_speed'][-1][0] if len(data['vehicle_speed']) > 0 else None
             speed_limit = data['speed_limit'][-1][0] if len(data['speed_limit']) > 0 else None
+
+            wheel_angle = data['steering_wheel_angle'][-1][0] if len(data['steering_wheel_angle']) > 0 else None
         del data # delete reference
 
         if lat is not None and lng is not None:
@@ -195,7 +112,7 @@ class GUI(tkinter.Tk):
                 self.last_position = (lat, lng)
                 self.interpolate_time = time.time()
                 self.inter_lat, self.inter_lng = lat, lng
-                #self.check_turning(lat, lng)
+                self.check_turning(lat, lng, wheel_angle)
             else:
                 if self.last_speed is not None and speed is not None and self.last_direction is not None:
                     self.interpolate(speed)
@@ -203,7 +120,7 @@ class GUI(tkinter.Tk):
 
             marker = self.make_marker()
             self.last_speed = speed
-            self.redraw_elements(lat, lng, speed, speed_limit, marker)
+            self.redraw_elements(lat, lng, speed, speed_limit, marker, wheel_angle)
 
         self.after(50, self.update_image)
 
@@ -242,7 +159,7 @@ class GUI(tkinter.Tk):
 
         return list(self.center - 0.5*r - ortog*0.3) + list(self.center + r*0.5) + list(self.center - 0.5*r + ortog*0.3)
 
-    def check_turning(self, lat, lng):
+    def check_turning(self, lat, lng, wheel_angle):
         self.coord_mem.append( (lat, lng))
         if self.coord_mem_cap < len(self.coord_mem):
             self.coord_mem.popleft()
@@ -254,6 +171,9 @@ class GUI(tkinter.Tk):
                 self.turning = {}
             else:
                 self.turning['coords'].append( (lat, lng) )
+            return
+
+        if wheel_angle is None or abs(wheel_angle) < 150:
             return
 
         address = self.street_address
@@ -274,7 +194,7 @@ class GUI(tkinter.Tk):
             self.street_address = address
             print("TURNING")
 
-    def redraw_elements(self, lat, lng, speed, speed_limit, marker):
+    def redraw_elements(self, lat, lng, speed, speed_limit, marker, wheel_angle):
         self.canvas.delete("all")
         self.img = self.map[lat, lng]
         self.photo_image = ImageTk.PhotoImage(self.img)
@@ -297,6 +217,7 @@ class GUI(tkinter.Tk):
 
         self.canvas.create_text((10, 35), anchor = "nw", text="Speed limit: " + \
                 (format(speed_limit, '.1f') if speed_limit is not None else "?"))
+
             
         speeding = "Unknown"
         color = "black"
@@ -309,6 +230,9 @@ class GUI(tkinter.Tk):
                 color = "red"
                 
         self.canvas.create_text((10, 50), anchor = "nw", text="Speeding: " + speeding, fill = color)
+
+        self.canvas.create_text((10, 65), anchor = "nw", text="Wheel rotation: " + \
+                (format(abs(wheel_angle), '.0f') if wheel_angle is not None else "?"))
 
     def fetch_img(self, lat, lng):
         req = self.build_request(lat, lng)
@@ -338,5 +262,5 @@ class GUI(tkinter.Tk):
         return s
 
 if __name__ == "__main__":
-    gui = GUI("downtown-east2.json")
-    #gui = GUI(*["records/"+filename for filename in os.listdir("records/")])
+    sim = TripSimulator("downtown-east2.json")
+    #sim = TripSimulator(*["records/"+filename for filename in os.listdir("records/")])
