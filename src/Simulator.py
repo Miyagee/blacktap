@@ -20,84 +20,96 @@ from maps import Maps
 
 class FileReader(Thread):
 
-    #Constructor
-        def __init__(self, url):
-            super(FileReader, self).__init__()
-            self.daemon = True
+    # Constructor
+    def __init__(self, url):
+        super(FileReader, self).__init__()
+        self.daemon = True
 
-            self.url = url
-            self.results = dd(list)
-            self.lock = RLock()
+        self.url = url
+        self.results = dd(list)
+        self.lock = RLock()
 
-            self.speed_up = 1.0
+        self.speed_up = 1.0
 
-            #For creating data subsets for test making:
-            self.record = False
-            self.record_buffer = []
-            self.record_index = 1
-            self.filename_prefix = "records/record"
-            self.rewind = None
+        #For creating data subsets for test making:
+        self.record = False
+        self.record_buffer = []
+        self.record_index = 1
+        self.filename_prefix = "records/record"
+        self.rewind = None
 
-        def change_speed_by(self, k):
-            self.speed_up *= k
+    def change_speed_by(self, k):
+        self.speed_up *= k
 
-        def get_speed(self):
-            return self.speed_up
+    def get_speed(self):
+        return self.speed_up
 
-        #Simulate time delay between input	
-        def sleeper(self, cur_timestamp, old_timestamp):
-            if cur_timestamp > old_timestamp:
-                time.sleep((cur_timestamp-old_timestamp) / self.speed_up)
-            return cur_timestamp
+    # Simulate time delay between input
+    def sleeper(self, cur_timestamp, old_timestamp):
+        if cur_timestamp > old_timestamp:
+            time.sleep((cur_timestamp - old_timestamp) / self.speed_up)
+        return cur_timestamp
 
-        #Opens and read the file with date input
-        def run(self):
+    # Opens and read the file with date input
+    def run(self):
 
-            data = []
-            old_timestamp = None
+        data = []
+        old_timestamp = None
 
-            with open(self.url) as f:
-                data.extend(f.readlines())
-            i = 0
-            while i < (len(data)):
-                json_data = json.loads(data[i])
+        with open(self.url) as f:
+            data.extend(f.readlines())
+        i = 0
+        while i < (len(data)):
+            json_data = json.loads(data[i])
 
-                if self.record:
-                    self.record_buffer.append(data[i])
-                elif not self.record and self.record_buffer:
+            if self.record:
+                self.record_buffer.append(data[i])
+            elif not self.record and self.record_buffer:
+                filename = self.filename_prefix + str(self.record_index)
+                self.record_index += 1
+                while os.path.isfile(filename):
                     filename = self.filename_prefix + str(self.record_index)
                     self.record_index += 1
-                    while os.path.isfile(filename):
-                        filename = self.filename_prefix + str(self.record_index)
-                        self.record_index += 1
 
-                    open(filename, "w").write("".join(self.record_buffer))
-                    self.record_buffer = []
-                elif self.rewind:
+                open(filename, "w").write("".join(self.record_buffer))
+                self.record_buffer = []
+            elif self.rewind:
+                i -= 1
+                json_data = json.loads(data[i])
+                now = json_data['timestamp']
+                while 0 < i and json_data['timestamp'] > now - self.rewind:
                     i -= 1
                     json_data = json.loads(data[i])
-                    now = json_data['timestamp']
-                    while 0 < i and json_data['timestamp'] > now - self.rewind:
-                        i -= 1
-                        json_data = json.loads(data[i])
-                        self.results[json_data['name']].pop()
-                    old_timestamp = None
-                    self.rewind = None
+                    self.results[json_data['name']].pop()
+                old_timestamp = None
+                self.rewind = None
 
-                if old_timestamp is None: # Initial case
-                    old_timestamp = json_data["timestamp"]
-                old_timestamp = self.sleeper(json_data["timestamp"], old_timestamp)
+            if old_timestamp is None: # Initial case
+                old_timestamp = json_data["timestamp"]
+            old_timestamp = self.sleeper(json_data["timestamp"], old_timestamp)
 
-                with self.lock:
-                    self.results[json_data['name']].append( (json_data["value"], json_data["timestamp"]) )
-                i += 1
+            with self.lock:
+                self.results[json_data['name']].append( (json_data["value"], json_data["timestamp"]) )
+            i += 1
 
-        #Getter to get all results
-        def get_data(self):
-            return self.lock, self.results
+        for i in range(len(data)):
+            json_data = json.loads(data[i])
+
+            if old_timestamp is None:  # Initial case
+                old_timestamp = json_data["timestamp"]
+            old_timestamp = self.sleeper(json_data["timestamp"], old_timestamp)
+
+            with self.lock:
+                self.results[json_data['name']].append((json_data["value"], json_data["timestamp"]))
+
+    # Getter to get all results
+    def get_data(self):
+        return self.lock, self.results
+
 
 class GUI(tkinter.Tk):
     def __init__(self, *files):
+
         super(GUI, self).__init__()
 
         self.title("Trip Simulator")
@@ -105,8 +117,8 @@ class GUI(tkinter.Tk):
         self.img = self.img.convert("RGB")
 
         self.photo_image = ImageTk.PhotoImage(self.img)
-        self.canvas = tkinter.Canvas(self, width = 500, height = 500)
-        self.canvas.create_image(250, 250, image = self.photo_image)
+        self.canvas = tkinter.Canvas(self, width=500, height=500)
+        self.canvas.create_image(250, 250, image=self.photo_image)
         self.canvas.pack()
 
 
@@ -125,15 +137,18 @@ class GUI(tkinter.Tk):
         self.test_files = list(files)
         self.stream = None
 
-
         self.map = Maps()
         self.update_stream()
         self.update_image() # Periodic tasks
+        self.turning = {}  # Dictionary to be filled with points and a timer, for marking turns
+        self.street_address = None  # Current street address (derived from coords)
+        self.coord_mem = deque()  # Remember few last coords for the turn line
+        self.coord_mem_cap = 5  # capacity = 5
 
         self.mainloop()
 
     def handle_key_press(self, key):
-        if key.keycode == 1769515: # pluss-tegn
+        if key.keycode == 1769515:  # pluss-tegn
             self.stream.change_speed_by(1.5)  # speed up stream
         elif key.keycode == 2883629: # minus-tegn
             self.stream.change_speed_by(1 / 1.5) # slow down stream
@@ -178,7 +193,7 @@ class GUI(tkinter.Tk):
 
             speed = 1.6 * data['vehicle_speed'][-1][0] if len(data['vehicle_speed']) > 0 else None
             speed_limit = data['speed_limit'][-1][0] if len(data['speed_limit']) > 0 else None
-        data = None # delete reference
+        data = None  # delete reference
 
         if lat is not None and lng is not None:
 
@@ -305,7 +320,6 @@ class GUI(tkinter.Tk):
                 
         self.canvas.create_text((10, 50), anchor = "nw", text="Speeding: " + speeding, fill = color)
 
-
     def fetch_img(self, lat, lng):
         req = self.build_request(lat, lng)
         response = requests.get(req)
@@ -319,16 +333,16 @@ class GUI(tkinter.Tk):
             raise Exception("Could not fetch map image")
 
     def build_request(self, lat, lng):
-        col = "%3A" # URL encoding for :
+        col = "%3A"  # URL encoding for :
         pip = "%7C"
         s = "https://maps.googleapis.com/maps/api/staticmap?" + \
-                    "key=AIzaSyCehm2J69ZTy8Z-10FwDDgVZb5l0k0PFEE" + "&" + \
-                    "center="+str(lat)+","+str(lng) + "&" + \
-                    "zoom=17" + "&" + \
-                    "size=500x500"
+            "key=AIzaSyCehm2J69ZTy8Z-10FwDDgVZb5l0k0PFEE" + "&" + \
+            "center=" + str(lat) + "," + str(lng) + "&" + \
+            "zoom=17" + "&" + \
+            "size=500x500"
         if self.turning:
-            s += "&path=color"+col+"0x0000ffff"+pip+"weight"+col+"5"+ \
-                    pip.join(str(tup[0])+","+str(tup[1]) for tup in self.turning['coords'])
+            s += "&path=color" + col + "0x0000ffff" + pip + "weight" + col + "5" + \
+                pip.join(str(tup[0]) + "," + str(tup[1]) for tup in self.turning['coords'])
 
         print(s)
         return s
