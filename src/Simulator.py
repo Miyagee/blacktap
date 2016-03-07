@@ -4,18 +4,20 @@ import tkinter
 import numpy as np
 import googlemaps
 import os
+import json
 
 from threading import Thread
 from collections import deque
 from PIL import ImageFile, ImageTk, Image
-from math import cos, pi
+from math import cos, pi, acos
 from maps import Maps
 from filereader import FileReader
+from sys import stdout
 
 class TripSimulator(tkinter.Tk):
     def __init__(self, *files):
 
-        super(GUI, self).__init__()
+        super(TripSimulator, self).__init__()
 
         self.title("Trip Simulator")
         self.img = Image.open("Googlemapslogo2014.png")
@@ -44,24 +46,53 @@ class TripSimulator(tkinter.Tk):
 
         self.map = Maps()
         self.update_stream()
-        self.update_image() # Periodic tasks
+        self.address_lookup = Thread()
         self.turning = {}  # Dictionary to be filled with points and a timer, for marking turns
         self.street_address = None  # Current street address (derived from coords)
         self.coord_mem = deque()  # Remember few last coords for the turn line
         self.coord_mem_cap = 5  # capacity = 5
+        self.adding_turn_signals = False # For creating new data set with turn signals
+        self.signal_blink_time = time.time()
 
+        self.update_image() # Periodic tasks
         self.mainloop()
 
     def handle_key_press(self, key):
-        if key.keycode == 1769515:  # pluss-tegn
+        if key.keycode == 1769515:  # "+"
             self.stream.change_speed_by(1.5)  # speed up stream
-        elif key.keycode == 2883629: # minus-tegn
+        elif key.keycode == 2883629: # "-"
             self.stream.change_speed_by(1 / 1.5) # slow down stream
-        elif key.keycode == 983154:
+        elif key.keycode == 983154: # "r"
             self.stream.record = not self.stream.record
-        elif key.keycode == 720994:
+        elif key.keycode == 720994: # "b"
             self.stream.rewind = 30
             self.reset_data()
+        elif key.keycode == 1114228: # "t" : Add turn signals to new dataset
+            if not self.adding_turn_signals:
+                self.stream.rewind = 7
+                lock, data = self.stream.get_data()
+                with lock:
+                    self.stream.add_line = "right" if data['steering_wheel_angle'][-1][0] < 0 else "left"
+                self.adding_turn_signals = True
+            else:
+                self.stream.add_line = "off"
+                self.adding_turn_signals = False
+
+        elif key.keycode == 3473435: # "esc" : Exit logic
+            if self.stream.line_indices: 
+                data = open(self.stream.url).readlines()
+                for i, val in self.stream.line_indices:
+                    data[i:i] = json.dumps({
+                        "name" : "turn_signals", 
+                        "value" : val,
+                        "timestamp" : json.loads(data[i])['timestamp']
+                        })+'\n'
+                open(self.stream.url[:-5] + "_turn_sigs.json", "w").write("".join(data))
+
+            self.destroy()
+            exit()
+        else:
+            print("Key =", key.keycode)
 
     def update_stream(self):
         if len(self.test_files) and (self.stream is None or not self.stream.is_alive()):
@@ -100,6 +131,8 @@ class TripSimulator(tkinter.Tk):
             speed_limit = data['speed_limit'][-1][0] if len(data['speed_limit']) > 0 else None
 
             wheel_angle = data['steering_wheel_angle'][-1][0] if len(data['steering_wheel_angle']) > 0 else None
+
+            turn_signal = data['turn_signals'][-1][0] if len(data['turn_signals']) > 0 else None
         del data # delete reference
 
         if lat is not None and lng is not None:
@@ -118,9 +151,9 @@ class TripSimulator(tkinter.Tk):
                     self.interpolate(speed)
                     lat, lng = self.inter_lat, self.inter_lng
 
-            marker = self.make_marker()
+            marker, turn_circle = self.make_marker_and_turn_signal(turn_signal)
             self.last_speed = speed
-            self.redraw_elements(lat, lng, speed, speed_limit, marker, wheel_angle)
+            self.redraw_elements(lat, lng, speed, speed_limit, marker, turn_circle, wheel_angle)
 
         self.after(50, self.update_image)
 
@@ -133,31 +166,40 @@ class TripSimulator(tkinter.Tk):
         self.inter_lat += r[0] / 111111
         self.inter_lng += r[1] / (111111 * cos(self.inter_lat / 360 * 2*pi))
 
-    def make_marker(self):
+    def make_marker_and_turn_signal(self, turn_signal):
         if self.last_direction == None:
-            return (self.center[0] - 5, self.center[1] - 5,
-                    self.center[0] + 5, self.center[1] - 5,
-                    self.center[0] + 5, self.center[1] + 5,
-                    self.center[0] - 5, self.center[1] + 5)
-
-        r = self.last_direction[::-1]#[lng - self.last_position[1], lat - self.last_position[0]] # retningsvektor
-        ortog = [1, 1] # orthogonal vektor
-        if r[0] == 0:
-            ortog[1] = 0
-        elif r[1] == 0:
-            ortog[0] = 0
+            marker = (self.center[0] - 5, self.center[1] - 5,
+                     self.center[0] + 5, self.center[1] - 5,
+                     self.center[0] + 5, self.center[1] + 5,
+                     self.center[0] - 5, self.center[1] + 5)
         else:
-            ortog[1] = -r[0] / r[1]
-        r = np.array(r)             # Linear algebra vector
-        ortog = np.array(ortog)
+            r = self.last_direction[::-1] #[lng - self.last_position[1], lat - self.last_position[0]] # retningsvektor
+            ortog = [1, 1] # orthogonal vektor
+            if r[0] == 0:
+                ortog[1] = 0
+            elif r[1] == 0:
+                ortog[0] = 0
+            else:
+                ortog[1] = -r[0] / r[1]
+            r = np.array(r)             # Linear algebra vector
+            ortog = np.array(ortog)
 
-        r = r * 20 / np.linalg.norm(r)              # Normaliserer til lengde 20
-        ortog = ortog * 20 / np.linalg.norm(ortog)
+            r = r * 20 / np.linalg.norm(r)              # Normaliserer til lengde 20
+            ortog = ortog * 20 / np.linalg.norm(ortog)
 
-        r[1] *= -1
-        ortog[1] *= -1
+            r[1] *= -1
+            ortog[1] *= -1
 
-        return list(self.center - 0.5*r - ortog*0.3) + list(self.center + r*0.5) + list(self.center - 0.5*r + ortog*0.3)
+            if r[0]*(-1)*ortog[1] + r[1]*ortog[0] > 0: # Ensure ortog points to the right
+                ortog *= -1
+
+            marker = list(self.center - 0.5*r - ortog*0.3) + list(self.center + r*0.5) + list(self.center - 0.5*r + ortog*0.3)
+        turn_circle = None
+        if turn_signal == "left":
+            turn_circle = list(map(list, [self.center + 0.5*r - ortog*0.3 + radius for radius in [-3, 3]]))
+        elif turn_signal == "right":
+            turn_circle = list(map(list, [self.center + 0.5*r + ortog*0.3 + radius for radius in [-3, 3]]))
+        return marker, turn_circle
 
     def check_turning(self, lat, lng, wheel_angle):
         self.coord_mem.append( (lat, lng))
@@ -175,7 +217,12 @@ class TripSimulator(tkinter.Tk):
 
         if wheel_angle is None or abs(wheel_angle) < 150:
             return
+        
+        if not self.address_lookup.is_alive():
+            self.address_lookup = Thread(target = self.lookup_address, args = (lat, lng))
+            self.address_lookup.start()
 
+    def lookup_address(self, lat, lng):
         address = self.street_address
         try: # Haults (stucks) after quota of 2500 lookups per day.
             response = self.cli.reverse_geocode((lat, lng), result_type = "route")
@@ -192,9 +239,11 @@ class TripSimulator(tkinter.Tk):
         elif address != self.street_address:
             self.turning = {'time' : time.time(), 'coords' : list(self.coord_mem)}
             self.street_address = address
-            print("TURNING")
+            if time.time() - self.signal_blink_time > 3:
+                print("\a\a\a", end="")
+                stdout.flush()
 
-    def redraw_elements(self, lat, lng, speed, speed_limit, marker, wheel_angle):
+    def redraw_elements(self, lat, lng, speed, speed_limit, marker, turn_circle,  wheel_angle):
         self.canvas.delete("all")
         self.img = self.map[lat, lng]
         self.photo_image = ImageTk.PhotoImage(self.img)
@@ -202,10 +251,14 @@ class TripSimulator(tkinter.Tk):
         self.canvas.create_image(250, 250, image = self.photo_image)
 
         self.canvas.create_polygon(marker, fill="blue")
+        if turn_circle is not None:
+            if 0.250 < time.time() - self.signal_blink_time:
+                self.canvas.create_oval(*turn_circle, fill ="orange", outline="orange")
+            if 0.500 < time.time() - self.signal_blink_time:
+                self.signal_blink_time = time.time()
 
         if self.stream.record:
             self.canvas.create_oval(490, 15, 500, 5, fill = "red")
-
 
         self.canvas.create_rectangle(0, 0, 150, 80, fill="white")
 
@@ -262,5 +315,5 @@ class TripSimulator(tkinter.Tk):
         return s
 
 if __name__ == "__main__":
-    sim = TripSimulator("downtown-east2.json")
+    sim = TripSimulator("downtown-east2_turn_sigs.json")
     #sim = TripSimulator(*["records/"+filename for filename in os.listdir("records/")])

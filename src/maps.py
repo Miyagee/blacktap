@@ -46,7 +46,6 @@ class Maps:
             return Image.new("RGB", (500, 500), "white")
 
     def download(self, ind_lat, ind_lng):
-        print("Downloading image!")
         lat, lng = ind_lat * self.dlat, ind_lng * self.dlng
         response = requests.get(
                 "https://maps.googleapis.com/maps/api/staticmap?" + \

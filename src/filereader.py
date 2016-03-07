@@ -26,6 +26,8 @@ class FileReader(Thread):
         self.record_index = 1
         self.filename_prefix = "records/record"
         self.rewind = None
+        self.add_line = False
+        self.line_indices = []
 
     def change_speed_by(self, k):
         self.speed_up *= k
@@ -72,6 +74,10 @@ class FileReader(Thread):
                     self.results[json_data['name']].pop()
                 old_timestamp = None
                 self.rewind = None
+
+            if self.add_line:
+                self.line_indices.append( (i, self.add_line) )
+                self.add_line = None
 
             if old_timestamp is None: # Initial case
                 old_timestamp = json_data["timestamp"]
