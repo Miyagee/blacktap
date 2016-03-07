@@ -68,4 +68,4 @@ def add_speed_limits(filename):
             for e in buff:
                 out.write(e)
 
-add_speed_limits("downtown-east.json")
+add_speed_limits("data/downtown-west2.json")
