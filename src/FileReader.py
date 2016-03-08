@@ -38,8 +38,6 @@ class FileReader:
 			old_timestamp = self.sleeper(json_data["timestamp"], old_timestamp)
 
 			self.results.append([json_data["name"], json_data["value"], json_data["timestamp"]])
-
-		print "--::READ DONE::--"
 		
 	#Getter to get all results
 	def getResults(self):

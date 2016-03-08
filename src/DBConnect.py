@@ -5,16 +5,17 @@
 import MySQLdb
 
 class DBConnect:
+	
 	# Empty constructor
 	def __init__(self):
-		#empty
+		pass
 	
 	#Connect to database
 	def connect(self):
 		self.db = MySQLdb.connect(host = "mysql.stud.ntnu.no",
-							 user = "skyclouds_admin"
-							 passwd = "blacktap"
-							 db = "skyclouds_backtap")
+								  user = "skyclouds_admin",
+								  passwd = "blacktap",
+								  db = "skyclouds_blacktap")
 	
 	#Get the database connection object
 	def getConnection(self):
