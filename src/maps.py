@@ -9,10 +9,10 @@ class Maps:
     def __init__(self):
         self.pieces = {}
         self.pending = set()
-        
+
         self.dlat = 0.004063
         self.dlng = 0.005365
-        
+
     def __getitem__(self, pos):
         lat, lng = pos
 
@@ -37,11 +37,12 @@ class Maps:
     def get_part(self, ind_lat, ind_lng):
         index = (ind_lat, ind_lng)
         if index in self.pieces:
-            return self.pieces[index] 
+            return self.pieces[index]
         else:
             if not index in self.pending:
                 self.pending.add(index)
                 T = Thread(target = self.download, args = index)
+                T.daemon = True
                 T.start()
             return Image.new("RGB", (500, 500), "white")
 
@@ -63,8 +64,8 @@ class tester(tkinter.Tk):
 
         self.map = Maps()
 
-        self.lat = 40.788147
-        self.lng = -73.950264
+        self.lat = 63.4176044
+        self.lng = 10.4126962
 
         self.canvas = tkinter.Canvas(self, width = 500, height=500)
         self.canvas.pack()
@@ -89,3 +90,6 @@ class tester(tkinter.Tk):
         self.photo_img = ImageTk.PhotoImage(self.map[self.lat, self.lng])
         self.canvas.create_image(250, 250, image = self.photo_img)
         self.after(50, self.update)
+
+if __name__ == '__main__':
+    test = tester()

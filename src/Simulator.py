@@ -40,7 +40,7 @@ class TripSimulator(tkinter.Tk):
 
         self.cli = googlemaps.Client(key="AIzaSyCehm2J69ZTy8Z-10FwDDgVZb5l0k0PFEE")
         self.coord_mem_cap = 5 # capacity = 5
-        
+
         self.test_files = list(files)
         self.stream = None
 
@@ -79,11 +79,11 @@ class TripSimulator(tkinter.Tk):
                 self.adding_turn_signals = False
 
         elif key.keycode == 3473435: # "esc" : Exit logic
-            if self.stream.line_indices: 
+            if self.stream.line_indices:
                 data = open(self.stream.url).readlines()
                 for i, val in self.stream.line_indices:
                     data[i:i] = json.dumps({
-                        "name" : "turn_signals", 
+                        "name" : "turn_signals",
                         "value" : val,
                         "timestamp" : json.loads(data[i])['timestamp']
                         })+'\n'
@@ -217,7 +217,7 @@ class TripSimulator(tkinter.Tk):
 
         if wheel_angle is None or abs(wheel_angle) < 150:
             return
-        
+
         if not self.address_lookup.is_alive():
             self.address_lookup = Thread(target = self.lookup_address, args = (lat, lng))
             self.address_lookup.start()
@@ -240,14 +240,14 @@ class TripSimulator(tkinter.Tk):
             self.turning = {'time' : time.time(), 'coords' : list(self.coord_mem)}
             self.street_address = address
             if time.time() - self.signal_blink_time > 3:
-                print("\a\a\a", end="")
+                print("\a\a\a", end = "")
                 stdout.flush()
 
     def redraw_elements(self, lat, lng, speed, speed_limit, marker, turn_circle,  wheel_angle):
         self.canvas.delete("all")
         self.img = self.map[lat, lng]
         self.photo_image = ImageTk.PhotoImage(self.img)
-            
+
         self.canvas.create_image(250, 250, image = self.photo_image)
 
         self.canvas.create_polygon(marker, fill="blue")
@@ -264,14 +264,14 @@ class TripSimulator(tkinter.Tk):
 
         self.canvas.create_text((10, 5), anchor = "nw", text="Play speed: " + \
                 format(self.stream.get_speed(), '.1f')+"x")
-        
+
         self.canvas.create_text((10, 20), anchor = "nw", text="Velocity: " + \
                 (format(speed, '.1f') + " km/h" if speed is not None else "?"))
 
         self.canvas.create_text((10, 35), anchor = "nw", text="Speed limit: " + \
                 (format(speed_limit, '.1f') if speed_limit is not None else "?"))
 
-            
+
         speeding = "Unknown"
         color = "black"
         if speed is not None and speed_limit is not None:
@@ -281,7 +281,7 @@ class TripSimulator(tkinter.Tk):
             else:
                 speeding = "Yes"
                 color = "red"
-                
+
         self.canvas.create_text((10, 50), anchor = "nw", text="Speeding: " + speeding, fill = color)
 
         self.canvas.create_text((10, 65), anchor = "nw", text="Wheel rotation: " + \
