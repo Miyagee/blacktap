@@ -38,8 +38,10 @@ class Sensors(threading.Thread):
             while Sensors._readers > 0:
                 logging.debug("Waiting on readers")
                 Sensors._lock.wait()
+
+
             logging.debug("Detected no readers")
-            Sensors._data = data
+            Sensors._data.extend(data)
             logging.debug("Data written")
             logging.debug("Releasing lock")
 
