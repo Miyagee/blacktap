@@ -2,6 +2,7 @@ from tkinter import *
 from maps import Maps
 from PIL import Image, ImageTk, ImageDraw, ImageFont
 from vibratingbox import VibratingBox
+import numpy as np
 
 class GUI(Tk):
 
@@ -20,6 +21,7 @@ class GUI(Tk):
                 Image.open("resources/thumbs_down_symbol.jpg"), self._canvas)
         self._thumbs_up_sym = VibratingBox((450, 175),
                 Image.open("resources/thumbs_up_symbol.jpg"), self._canvas)
+        self._marker = None
 
         self.set_speed_limit(120)
         self._turn_signal_sym.set_vibrate(10)
@@ -34,7 +36,6 @@ class GUI(Tk):
         self.set_coords(40.77192, -73.953773)
 
         self._update()
-        self.mainloop()
 
     def set_coords(self, lat, lng):
         self._coords = (lat, lng)
@@ -56,6 +57,9 @@ class GUI(Tk):
                 55), fill ="black")
         self._speed_limit_sym = VibratingBox((275, 175), img, self._canvas)
 
+    def set_marker(self, marker):
+        self._marker = np.matrix([[500, 0], [0, 500]]) * marker
+
     def _update(self):
         self._canvas.delete("all")
 
@@ -66,6 +70,11 @@ class GUI(Tk):
             self._map_img.paste(mapimg, (1,1))
             self._map_tk = ImageTk.PhotoImage(self._map_img)
             self._canvas.create_image( (275, 475), image=self._map_tk)
+            if self._marker is not None:
+                points = list(np.asarray(np.reshape(self._marker,
+                    self._marker.size))[0])
+                points = [e+225 if i % 2 else e +25 for i, e in  enumerate(points)]
+                self._canvas.create_polygon(points, fill="blue")
 
         self._turn_signal_sym.draw()
         self._speed_limit_sym.draw()
@@ -75,4 +84,5 @@ class GUI(Tk):
             self._thumbs_down_sym.draw()
         self.after(20, self._update)
 
-G = GUI()
+if __name__ == '__main__':
+    G = GUI()
