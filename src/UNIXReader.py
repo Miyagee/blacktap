@@ -18,7 +18,8 @@ class UNIXReader(object):
 		if os.path.exists(self.server_adress):
 			os.unlink(self.server_adress)
 		self.sock.bind(self.server_adress)
-		self.connection, self.client_address = sock.accept()
+                self.sock.listen(1)
+		self.connection, self.client_address = self.sock.accept()
 	
 	#Receive socket from connection
 	def revc_socket(self):	

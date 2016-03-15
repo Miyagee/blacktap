@@ -18,12 +18,18 @@ class Main:
         self._geo_listen = Geometry()
         self._frequency = 15
 
-        self._distributor = Distributor('upload_stream.sock', 1)
+        self._send_frequency = 1
+        self._distributor = Distributor('upload_stream.sock',
+                self._send_frequency)
         self._gui = GUI()
 
         t = threading.Thread(target=self._mainloop)
         t.daemon = True
         t.start()
+
+        s = threading.Thread(target=self._sender)
+        s.daemon = True
+        s.start()
 
         self._gui.mainloop()
 
@@ -34,6 +40,11 @@ class Main:
                 self._gui.set_coords(*Geometry._pos)
             if Geometry._marker is not None:
                 self._gui.set_marker(Geometry._marker)
+    def _sender(self):
+        while True:
+            self._distributor.send()
+            sleep(1 / self._send_frequency)
+
 
 if __name__ == '__main__':
     m = Main()

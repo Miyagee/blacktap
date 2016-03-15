@@ -6,6 +6,7 @@ import MySQLdb
 import time
 import thread
 import socket
+import json
 
 from FileReader import FileReader
 from DBConnect import DBConnect
@@ -16,7 +17,7 @@ from QueryDB import QueryDB
 class Runner(object):
 	#Constructor getting the file url
 	def __init__(self):
-		self.results
+		self.results = []
 	
 	#Start reading data end send to db
 	#in a set interval
@@ -24,7 +25,7 @@ class Runner(object):
 		#Connect to db, receive db connection Object
 		db_connect = DBConnect()
 		db_connect.connect()
-		db = dbConnect.get_connection()
+		db = db_connect.get_connection()
 		
 		"""
 		#Start reading the file, receive results list with data
@@ -46,9 +47,11 @@ class Runner(object):
 		while True:
 			
 			#Receive data from unix reader object
-			data = unix_reader.revc_socket
+			data = unix_reader.revc_socket()
 
-			json_data = json.loads(data[i])
+			json_data = json.loads(data)
+                        print "Receiver: json_data"
+                         
 			
 			#Parse the result data to appropriate format
 			sorted_results = dataParser.sortData(json_data)
