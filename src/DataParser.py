@@ -2,7 +2,7 @@
 # Date: 23/02/2016
 # Purpose: Read in data from blackbox/file
 
-class DataParser:
+class DataParser():
 	#Empty contructor
 	def __inif__(self):
 		pass
@@ -93,63 +93,3 @@ class DataParser:
 					self.longitude
 		]
 		return self.sortedResults
-	"""
-	GETTERS AND SETTERS FOR POTENTIAL FUTURE USE
-	"""	
-	@property		
-	def torque_at_transmission(self):
-		return self.torque_at_transmission
-	@property
-	def	engine_speed(self):
-		return self.engine_speed
-	@property
-	def	vehicle_speed(self):
-		return self.vehicle_speed
-	@property
-	def	accelerator_pedal_position(self):
-		return self.accelerator_pedal_position
-	@property
-	def	parking_brake_status(self):
-		return self.parking_brake_status
-	@property
-	def	brake_pedal_status(self):
-		return self.brake_pedal_status
-	@property
-	def	transmission_gear_position(self):
-		return self.torque_at_transmission
-	@property
-	def	gear_lever_position(self):
-		return self.gear_lever_position
-	@property
-	def	odometer(self):
-		return self.odometer
-	@property
-	def ignition_status(self):
-		return self.ignition_status
-	@property
-	def	fuel_level(self):
-		return self.fuel_level
-	@property
-	def	fuel_consumed_since_restart(self):
-		return self.fuel_consumed_since_restart
-	@property
-	def door_status(self):
-		return self.door_status
-	@property
-	def	headlamp_status(self):
-		return self.headlamp_status
-	@property
-	def	high_beam_status(self):
-		return self.high_beam_status
-	@property
-	def windshield_wiper_status(self):
-		return self.windshield_wiper_status
-	@property
-	def	latitude(self):
-		return self.latitude
-	@property
-	def	longitude(self):
-		return self.longitude
-	@property
-	def	timestamp(self):
-		return self.timestamp

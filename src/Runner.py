@@ -1,47 +1,76 @@
 # Written By: Christoffer A. Nilsen
 # Date: 03/01/2016
-# Purpose: Runner for FileReader, DBConnect and QueryDB
+# Purpose: Runner for DBConnect, QueryDB, UNIXReader and DataParser
 
 import MySQLdb
 import time
+import thread
+import socket
+
 from FileReader import FileReader
 from DBConnect import DBConnect
 from DataParser import DataParser
+from UNIXReader import UNIXReader
 from QueryDB import QueryDB
 
-class Runner:
+class Runner(object):
 	#Constructor getting the file url
-	def __init__(self, url):
-		self.url = url
+	def __init__(self):
+		self.results
 	
 	#Start reading data end send to db
 	#in a set interval
 	def run(self):
 		#Connect to db, receive db connection Object
-		dbConnect = DBConnect()
-		dbConnect.connect()
-		db = dbConnect.getConnection()
-	
+		db_connect = DBConnect()
+		db_connect.connect()
+		db = dbConnect.get_connection()
+		
+		"""
 		#Start reading the file, receive results list with data
 		fileReader = FileReader(self.url)
 		fileReader.open_and_read_file()
 		result = fileReader.getResults()
+		"""
 		
-		#Parse the result data to appropriate format
-		dataParser = DataParser()
-		sortedResults = dataParser.sortData(result)
+		#Setting up a class object and connecting.
+		unix_reader = UNIXReader("upload_stream.sock")
+		unix_reader.connect()
 		
-		#Send data to database
-		queryDB = QueryDB(db)
-		queryDB.query(sortedResults)
+		#Data parser class object to parse receieved data
+		data_parser = DataParser()
 		
-		#Close connection to database
+		#Query class object getting ready to query database
+		query_db = QueryDB(db)
 
-		dbConnect.disconnect()
+		while True:
+			
+			#Receive data from unix reader object
+			data = unix_reader.revc_socket
+
+			json_data = json.loads(data[i])
+			
+			#Parse the result data to appropriate format
+			sorted_results = dataParser.sortData(json_data)
+			
+			for value in sorted_results:
+				print value
+			'''
+			if dbConnect.check_connection():
+				#Send data to database
+				#query_db.query(sorted_results)
+			else: 
+				dbConnect.connect()
+				#Send data to database
+				#query_db.query(sorted_results)
+			'''
+		#Close connection to database
+		db_connect.disconnect()
+
 if __name__ == '__main__':
 	"""
 	This is the main method and is executed when you type "Python Runner.py"
 	in your terminal.
 	"""
-	Runner = Runner("../data/test.json")
-	Runner.run()
+	runner = Runner()
+	runner.run()
