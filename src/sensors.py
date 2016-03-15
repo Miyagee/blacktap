@@ -40,7 +40,7 @@ class Sensors(threading.Thread):
     def get_last(pred, ret, max_age=10**10):
         """Get the last data object satisfying the predicate 'pred'"""
         Sensors._add_reader()
-        before = Sensors.data[-1]["timestamp"] - max_age
+        before = Sensors._data[-1]["timestamp"] - max_age
         for obj in reversed(Sensors._data):
             if obj["timestamp"] < before:
                 break
@@ -53,7 +53,7 @@ class Sensors(threading.Thread):
     def get_data(pred, ret, num_limit=10**10, max_age=10**10):
         """Adds all data which satisfies the predicate 'pred' in the max_age last seconds to 'ret'"""
         Sensors._add_reader()
-        before = Sensors.data[-1]["timestamp"] - max_age
+        before = Sensors._data[-1]["timestamp"] - max_age
         objs = []
         for obj in reversed(Sensors._data):
             if num_limit == len(objs) or obj["timestamp"] < before:
