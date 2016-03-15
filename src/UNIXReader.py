@@ -3,6 +3,7 @@
 # Purpose: Get data socket from Main server program
 
 import socket
+import os
 
 class UNIXReader(object):
 	
@@ -13,6 +14,9 @@ class UNIXReader(object):
 	#Creating and setting up socket and connection
 	def connect(self):
 		self.sock = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)
+		
+		if os.path.exists(self.server_adress):
+			os.unlink(self.server_adress)
 		self.sock.bind(self.server_adress)
 		self.connection, self.client_address = sock.accept()
 	
