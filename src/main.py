@@ -2,6 +2,7 @@ from filestream import FileStream
 from receiver import Receiver
 from sensors import Sensors
 from geometry import Geometry
+from distributor import Distributor
 from time import sleep
 from gui import GUI
 import numpy as np
@@ -11,11 +12,13 @@ import time
 class Main:
     def __init__(self):
         self._socket_address = 'data_stream.sock'
-        self._stream = FileStream('downtown-east2.json', self._socket_address)
+        self._stream = FileStream("downtown-east2_turn_sigs.json",
+                self._socket_address)
         self._receiver = Receiver(self._socket_address)
         self._geo_listen = Geometry()
         self._frequency = 15
 
+        self._distributor = Distributor('upload_stream.sock', 1)
         self._gui = GUI()
 
         t = threading.Thread(target=self._mainloop)

@@ -31,14 +31,15 @@ class Distributor(object):
                 ('longitude', self._last),
                 ('odometer', self._last),
                 ('parking_brake_status', self._any),
-                ('speed_limit', self._any),
+                ('speed_limit', self._last),
                 ('transmission_gear_position', self._last),
                 ('turn_signal', self._any),
                 ('vehicle_speed', self._average),
                 ('windshield_wiper_status', self._any)]
 
     def send(self):
-        paylooad = [e[1](e[0]) for e in self._datas]
+        payload = [e[1](e[0]) for e in self._datas]
+        payload = [e for e in payload if e is not None]
 
         self._socket.send(json.dumps(payload))
 
@@ -46,19 +47,26 @@ class Distributor(object):
         data = []
         Sensors.get_data(lambda obj : obj['name'] == name, data, max_age =
                 self._period)
-        return sum(elem['value'] for elem in data) / len(data)
+        if data:
+            value = sum(elem['value'] for elem in data) / len(data)
+            timestamp = sum(elem['timestamp'] for elem in data) / len(data)
+            return self._make(name, value, timestamp)
 
     def _last(self, name):
         data = []
         Sensors.get_last(lambda obj : obj['name'] == name, data, max_age =
                 self._period)
         if data:
-            return data[0]['value']
-        else:
-            return None
+            return self._make(name, data[0]['value'], data[0]['timestamp'])
 
     def _any(self, name):
         data = []
         Sensors.get_data(lambda obj : obj['name'] == name, data, max_age =
                 self._period)
-        return reduce(lambda a, b : a['value'] or b['value'], data, False)
+        if data:
+            for obj in data:
+                if obj['value']:
+                    return self._make(name, True, obj['timestamp'])
+
+    def _make(self, name, value, timestamp):
+        return {'name':name, 'value':value, 'timestamp':timestamp}

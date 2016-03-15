@@ -47,7 +47,7 @@ class FileStream(threading.Thread):
 if __name__ == '__main__':
     while True:
         try:
-            f = FileStream('downtown-east2.json', 'data_stream_sock').join()
+            f = FileStream('downtown-east2.json', 'data_stream.sock').join()
         except KeyboardInterrupt:
             break
         except:
