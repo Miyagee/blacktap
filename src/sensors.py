@@ -1,6 +1,5 @@
 import threading
 import logging
-import json
 
 logging.basicConfig(level=logging.WARNING, format='[%(threadName)-10s] %(message)s')
 
@@ -31,41 +30,36 @@ class Sensors(threading.Thread):
 
     @staticmethod
     def insert_data(obj):
-        """Inserts a list of JSON-strings into data"""
+        """Inserts a JSON-object into data"""
         with Sensors._lock:
-            logging.debug("Aquired lock")
             while Sensors._readers > 0:
-                logging.debug("Waiting on readers")
                 Sensors._lock.wait()
-
-
-            logging.debug("Detected no readers")
             Sensors._data.append(obj)
-            logging.debug("Data written")
-            logging.debug("Releasing lock")
 
     @staticmethod
-    def get_last(pred, ret):
+    def get_last(pred, ret, max_age=10**10):
         """Get the last data object satisfying the predicate 'pred'"""
         Sensors._add_reader()
+        before = Sensors.data[-1]["timestamp"] - max_age
         for obj in reversed(Sensors._data):
-            if pred(obj):
+            if obj["timestamp"] < before:
+                break
+            elif pred(obj):
                 ret.append(obj)
                 break
         Sensors._remove_reader()
 
     @staticmethod
-    def get_data(pred, ret, num_limit = 10**10):
-        """Adds all data which satisfies the predicate 'pred' after timestamp 'after' to 'ret'"""
+    def get_data(pred, ret, num_limit=10**10, max_age=10**10):
+        """Adds all data which satisfies the predicate 'pred' in the max_age last seconds to 'ret'"""
         Sensors._add_reader()
-        logging.debug("reading data")
+        before = Sensors.data[-1]["timestamp"] - max_age
         objs = []
         for obj in reversed(Sensors._data):
-            if num_limit == len(objs):
+            if num_limit == len(objs) or obj["timestamp"] < before:
                 break
             elif pred(obj):
                 objs.append(obj)
-        logging.debug("finished reading data")
         Sensors._remove_reader()
         ret.extend(objs)
 
@@ -77,8 +71,6 @@ def test():
     in_data = lines[:10]
     Sensors(Sensors.insert_data, in_data)
 
-    data = []
-
     Sensors(Sensors.get_data, lambda x: False, [])
     Sensors(Sensors.get_data, lambda x: False, [])
     Sensors(Sensors.get_data, lambda x: False, [])
@@ -88,7 +80,6 @@ def test():
     Sensors(Sensors.get_data, lambda x: False, [])
     Sensors(Sensors.get_data, lambda x: False, [])
     Sensors(Sensors.get_data, lambda x: False, [])
-
 
 
 if __name__ == '__main__':
