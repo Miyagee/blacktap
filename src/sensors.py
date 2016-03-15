@@ -2,7 +2,7 @@ import threading
 import logging
 import json
 
-logging.basicConfig(level=logging.DEBUG, format='[%(threadName)-10s] %(message)s')
+logging.basicConfig(level=logging.WARNING, format='[%(threadName)-10s] %(message)s')
 
 
 class Sensors(threading.Thread):
@@ -30,18 +30,17 @@ class Sensors(threading.Thread):
                 Sensors._lock.notify_all()
 
     @staticmethod
-    def insert_data(json_lines):
+    def insert_data(obj):
         """Inserts a list of JSON-strings into data"""
         with Sensors._lock:
             logging.debug("Aquired lock")
-            data = [json.loads(line) for line in json_lines]
             while Sensors._readers > 0:
                 logging.debug("Waiting on readers")
                 Sensors._lock.wait()
 
 
             logging.debug("Detected no readers")
-            Sensors._data.extend(data)
+            Sensors._data.append(obj)
             logging.debug("Data written")
             logging.debug("Releasing lock")
 
@@ -56,11 +55,16 @@ class Sensors(threading.Thread):
         Sensors._remove_reader()
 
     @staticmethod
-    def get_data(pred, ret, after=0):
+    def get_data(pred, ret, num_limit = 10**10):
         """Adds all data which satisfies the predicate 'pred' after timestamp 'after' to 'ret'"""
         Sensors._add_reader()
         logging.debug("reading data")
-        objs = [o for o in Sensors._data if pred(o)]
+        objs = []
+        for obj in reversed(Sensors._data):
+            if num_limit == len(objs):
+                break
+            elif pred(obj):
+                objs.append(obj)
         logging.debug("finished reading data")
         Sensors._remove_reader()
         ret.extend(objs)
@@ -74,7 +78,7 @@ def test():
     Sensors(Sensors.insert_data, in_data)
 
     data = []
-    Sensors(Sensors.get_data, lambda x: True, data)
+
     Sensors(Sensors.get_data, lambda x: False, [])
     Sensors(Sensors.get_data, lambda x: False, [])
     Sensors(Sensors.get_data, lambda x: False, [])
@@ -84,6 +88,8 @@ def test():
     Sensors(Sensors.get_data, lambda x: False, [])
     Sensors(Sensors.get_data, lambda x: False, [])
     Sensors(Sensors.get_data, lambda x: False, [])
+
+
 
 if __name__ == '__main__':
     test()
