@@ -48,7 +48,7 @@ class DataParser():
 			elif values["name"] == "transmission_gear_position":
 				self.transmission_gear_position.append(values["value"])
 			elif values["name"] == "gear_lever_position":
-				self.gear_lever_position.append(values["value"])
+				self.gear_lever_position.append("'" + values["value"] + "'")
 			elif values["name"] == "odometer":
 				self.odometer.append(values["value"])
 			elif values["name"] == "ignition_status":
@@ -58,7 +58,7 @@ class DataParser():
 			elif values["name"] == "fuel_consumed_since_restart":
 				self.fuel_consumed_since_restart.append(values["value"])
 			elif values["name"] == "door_status":
-				self.door_status.append(values["value"])
+				self.door_status.append("'" + values["value"] + "'")
 			elif values["name"] == "headlamp_status":
 				self.headlamp_status.append(values["value"])
 			elif values["name"] == "high_beam_status":
