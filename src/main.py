@@ -20,7 +20,6 @@ class Main:
         self._frequency = 15
 
         self._send_frequency = 1
-        self._distributor = Distributor('upload_stream.sock',self._send_frequency)
 
         self._gui = None
 
@@ -34,6 +33,7 @@ class Main:
 
         self._gui = GUI()
 
+        self._distributor = Distributor('upload_stream.sock',self._send_frequency)
         s = threading.Thread(target=self._sender)
         s.daemon = True
         s.start()
