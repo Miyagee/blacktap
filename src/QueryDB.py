@@ -49,12 +49,12 @@ class QueryDB:
 														") VALUES (" + "'1',")
 		query = query + "'" + timestamp + "'," + self.trip_id + "',"
 		
-		for index in range(1,len(sortedResults)):
+		for index in range(1, len(sortedResults)):
 			if len(sortedResults[index]) > 0:
-				query = query + "'" +str(sum(sortedResults[index])/float(len(sortedResults[index]))) + "'"
+				query = query + "'" + sortedResults[index][0] + "'"
 			else:
-				query = query + "'"+ "0" + "'"
-			if index != 20: 
+				query = query + "'0'"
+			if index != 20:
 				query = query + ","
 		query = query + ");"
 		print query

@@ -50,8 +50,7 @@ class Runner(object):
 			data = unix_reader.revc_socket()
 
 			json_data = json.loads(data)
-                        print "Receiver: json_data"
-                         
+            print "Receiver: json_data"
 			
 			#Parse the result data to appropriate format
 			sorted_results = dataParser.sortData(json_data)
