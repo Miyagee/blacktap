@@ -64,7 +64,8 @@ class Main:
             data = []
             Sensors.get_last(lambda obj : obj['name'] == 'speed_limit', data)
             if data and data[0]['value'] != self._speed_limit:
-                self._gui.set_speed_limit(data[0]['value'])
+                if self._speed_limit != data[0]['value']:
+                    self._gui.set_speed_limit(data[0]['value'])
                 self._speed_limit = data[0]['value']
 
     def _sender(self):
