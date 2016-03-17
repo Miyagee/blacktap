@@ -57,14 +57,15 @@ class Runner(object):
 			
 			for value in sorted_results:
 				print value
+				
 			'''
 			if dbConnect.check_connection():
 				#Send data to database
-				#query_db.query(sorted_results)
+				query_db.query(sorted_results)
 			else: 
 				dbConnect.connect()
 				#Send data to database
-				#query_db.query(sorted_results)
+				query_db.query(sorted_results)
 			'''
 		#Close connection to database
 		db_connect.disconnect()
