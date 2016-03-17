@@ -8,10 +8,10 @@ class Distributor(object):
 
     def __init__(self, address, frequency):
 
-        self._sock = socket.socket(AF_UNIX, SOCK_STREAM)
+        self._socket = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)
         self._socket_address = address
 
-        self._socket.connect(self._address)
+        self._socket.connect(self._socket_address)
         self._period = 1 / frequency
 
         self._datas = [  # name, function tuple
@@ -41,7 +41,8 @@ class Distributor(object):
         payload = [e[1](e[0]) for e in self._datas]
         payload = [e for e in payload if e is not None]
 
-        self._socket.send(json.dumps(payload))
+        print("Sending payload")
+        self._socket.send(json.dumps(payload).encode("utf-8"))
 
     def _average(self, name):
         data = []
