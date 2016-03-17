@@ -28,9 +28,6 @@ class GUI(Tk):
         self._marker = None
         self._marker_id = None
 
-        self._turn_signal_sym.set_vibrate(10)
-        self._speed_limit_sym.set_vibrate(5)
-        self._thumbs_up_sym.set_vibrate(3)
         self._thumbs = True # thumbs up
 
         self._marker_matrix = np.matrix([

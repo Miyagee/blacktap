@@ -50,22 +50,20 @@ class Runner(object):
 			data = unix_reader.revc_socket()
 
 			json_data = json.loads(data)
-            print "Receiver: json_data"
 			
 			#Parse the result data to appropriate format
-			sorted_results = dataParser.sortData(json_data)
+                        if json_data:
+                            sorted_results = data_parser.sortData(json_data)
 			
-			for value in sorted_results:
-				print value
-			'''
-			if dbConnect.check_connection():
-				#Send data to database
-				#query_db.query(sorted_results)
-			else: 
-				dbConnect.connect()
-				#Send data to database
-				#query_db.query(sorted_results)
-			'''
+                            for value in sorted_results:
+                                    print value
+                            if db_connect.check_connection():
+                                    #Send data to database
+                                    query_db.query(sorted_results)
+                            else:
+                                    db_connect.connect()
+                                    #Send data to database
+                                    query_db.query(sorted_results)
 		#Close connection to database
 		db_connect.disconnect()
 
