@@ -46,7 +46,7 @@ class DataParser():
 			elif values["name"] == "brake_pedal_status":
 				self.brake_pedal_status.append(values["value"])
 			elif values["name"] == "transmission_gear_position":
-				self.transmission_gear_position.append(values["value"])
+				self.transmission_gear_position.append("'"+values["value"]+"'")
 			elif values["name"] == "gear_lever_position":
 				self.gear_lever_position.append("'" + values["value"] + "'")
 			elif values["name"] == "odometer":
@@ -69,7 +69,6 @@ class DataParser():
 				self.latitude.append(values["value"])
 			elif values["name"] == "longitude":
 				self.longitude.append(values["value"])
-				
 		self.sortedResults = [
 					self.timestamp,
 					self.steering_wheel_angle,
