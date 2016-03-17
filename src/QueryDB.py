@@ -53,7 +53,7 @@ class QueryDB:
 		
 		for index in range(1, len(sortedResults)):
 			if len(sortedResults[index]) > 0:
-				query = query +  str(sortedResults[index][0])
+				query = query + str(sortedResults[index][0])
 			else:
 				query = query + "0"
 			if index != 20:
