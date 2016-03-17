@@ -20,6 +20,7 @@ class Main:
         self._frequency = 15
 
         self._send_frequency = 1
+        self._speed_limit = None
 
         self._gui = None
 
@@ -33,10 +34,10 @@ class Main:
 
         self._gui = GUI()
 
-        self._distributor = Distributor('upload_stream.sock',self._send_frequency)
-        s = threading.Thread(target=self._sender)
-        s.daemon = True
-        s.start()
+        #self._distributor = Distributor('upload_stream.sock',self._send_frequency)
+        #s = threading.Thread(target=self._sender)
+        #s.daemon = True
+        #s.start()
 
         self._gui.mainloop()
 
@@ -62,8 +63,9 @@ class Main:
 
             data = []
             Sensors.get_last(lambda obj : obj['name'] == 'speed_limit', data)
-            if data:
+            if data and data[0]['value'] != self._speed_limit:
                 self._gui.set_speed_limit(data[0]['value'])
+                self._speed_limit = data[0]['value']
 
     def _sender(self):
         while True:
