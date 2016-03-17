@@ -42,7 +42,7 @@
       <meta name="browser-stats-url" content="https://api.github.com/_private/browser/stats">
     <meta name="browser-errors-url" content="https://api.github.com/_private/browser/errors">
     <link rel="assets" href="https://assets-cdn.github.com/">
-    <link rel="web-socket" href="wss://live.github.com/_sockets/MTA3ODk4ODE6NjY4MDIwMzA3MjFkZjYzMzQ5M2RmMDdlNmJlNTI5OWI6Nzk4YzViZWIxNTNlOWZjMDg0YzY4MzQ2NGM1OGU4MjhmMmJkZWZlMTA1ODM2MDU4NDljZjYzOTY0OTQxMGRmZA==--1a25784d680f06808a502df9a86e7364a2ea3ab8">
+    <link rel="web-socket" href="wss://live.github.com/_sockets/MTA3ODk4ODE6NjY4MDIwMzA3MjFkZjYzMzQ5M2RmMDdlNmJlNTI5OWI6NTE1NDU5YmU0NjBkYmNiYjdiZTNkMTU3ZmIzNTkxMGNkZGYzZDNkMDQwZTViY2U0MGFiZTc0NTAxNTVmMjFlNg==--9151ea762ee17c2be6144f2bfb1b00efdaac8f19">
     <meta name="pjax-timeout" content="1000">
     <link rel="sudo-modal" href="/sessions/sudo_modal">
 
@@ -54,7 +54,7 @@
 <meta name="google-site-verification" content="ZzhVyEFwb7w3e0-uOTltm8Jsck2F5StVihD0exw2fsA">
     <meta name="google-analytics" content="UA-3769691-2">
 
-<meta content="collector.githubapp.com" name="octolytics-host" /><meta content="github" name="octolytics-app-id" /><meta content="81F1E7AA:5F9D:1AC6600:56EAA03F" name="octolytics-dimension-request_id" /><meta content="10789881" name="octolytics-actor-id" /><meta content="Nilsen89" name="octolytics-actor-login" /><meta content="38f990f330adc64887dc13646b8043d4501998ea6e1bdc491a1d9c1994c0a23a" name="octolytics-actor-hash" />
+<meta content="collector.githubapp.com" name="octolytics-host" /><meta content="github" name="octolytics-app-id" /><meta content="81F1E7AA:7CE1:197E70C:56EAA2D7" name="octolytics-dimension-request_id" /><meta content="10789881" name="octolytics-actor-id" /><meta content="Nilsen89" name="octolytics-actor-login" /><meta content="38f990f330adc64887dc13646b8043d4501998ea6e1bdc491a1d9c1994c0a23a" name="octolytics-actor-hash" />
 <meta content="/&lt;user-name&gt;/&lt;repo-name&gt;/blob/show" data-pjax-transient="true" name="analytics-location" />
 
 
@@ -67,7 +67,7 @@
     <meta name="user-login" content="Nilsen89">
 
         <meta name="expected-hostname" content="github.com">
-      <meta name="js-proxy-site-detection-payload" content="NmQ3MzYxNjI0YTljNDY4ZGQ4ZTk1ZmQ0ZTAzMzZlY2VjMGZhNTc5ZjJhYjAyZDk4NjM5YjJlOGNhNTAzMGU5ZHx7InJlbW90ZV9hZGRyZXNzIjoiMTI5LjI0MS4yMzEuMTcwIiwicmVxdWVzdF9pZCI6IjgxRjFFN0FBOjVGOUQ6MUFDNjYwMDo1NkVBQTAzRiJ9">
+      <meta name="js-proxy-site-detection-payload" content="Zjg5YzQ4Yjk2YjUwZDE1NzRlY2NiN2FjMGNjOWE2NTBjOTQ1MDM2NmQzOTZjM2MzNWNhNmZhMjNlZTFhNTEyZXx7InJlbW90ZV9hZGRyZXNzIjoiMTI5LjI0MS4yMzEuMTcwIiwicmVxdWVzdF9pZCI6IjgxRjFFN0FBOjdDRTE6MTk3RTcwQzo1NkVBQTJENyJ9">
 
       <link rel="mask-icon" href="https://assets-cdn.github.com/pinned-octocat.svg" color="#4078c0">
       <link rel="icon" type="image/x-icon" href="https://assets-cdn.github.com/favicon.ico">
@@ -82,7 +82,7 @@
   <meta name="go-import" content="github.com/Miyagee/blacktap git https://github.com/Miyagee/blacktap.git">
 
   <meta content="9053491" name="octolytics-dimension-user_id" /><meta content="Miyagee" name="octolytics-dimension-user_login" /><meta content="51084645" name="octolytics-dimension-repository_id" /><meta content="Miyagee/blacktap" name="octolytics-dimension-repository_nwo" /><meta content="false" name="octolytics-dimension-repository_public" /><meta content="false" name="octolytics-dimension-repository_is_fork" /><meta content="51084645" name="octolytics-dimension-repository_network_root_id" /><meta content="Miyagee/blacktap" name="octolytics-dimension-repository_network_root_nwo" />
-  <link href="https://github.com/Miyagee/blacktap/commits/merge_branch.atom?token=AKSj-UA8WvdL0N1vsl0wJ4vhRElfLM1Pks609oFIwA%3D%3D" rel="alternate" title="Recent Commits to blacktap:merge_branch" type="application/atom+xml">
+  <link href="https://github.com/Miyagee/blacktap/commits/merge_branch.atom?token=AKSj-Wwrmfsw_ibGTF16zYM6W0dE8Q0Mks609oPgwA%3D%3D" rel="alternate" title="Recent Commits to blacktap:merge_branch" type="application/atom+xml">
 
 
       <link rel="canonical" href="https://github.com/Miyagee/blacktap/blob/merge_branch/src/DataParser.py" data-pjax-transient>
@@ -223,7 +223,7 @@
             Settings
           </a>
 
-          <!-- </textarea> --><!-- '"` --><form accept-charset="UTF-8" action="/logout" class="logout-form" data-form-nonce="f0706702564eed047becc023130d2776eb932fb9" method="post"><div style="margin:0;padding:0;display:inline"><input name="utf8" type="hidden" value="&#x2713;" /><input name="authenticity_token" type="hidden" value="cnPtl8FFFSuJzMFySnmhkP5Bbn1nfA4jByYGN9Ahl5+eYbWiPqJnv53uJKY94Op7qNMzES2rUWehXuuKaTp/Fg==" /></div>
+          <!-- </textarea> --><!-- '"` --><form accept-charset="UTF-8" action="/logout" class="logout-form" data-form-nonce="f0706702564eed047becc023130d2776eb932fb9" method="post"><div style="margin:0;padding:0;display:inline"><input name="utf8" type="hidden" value="&#x2713;" /><input name="authenticity_token" type="hidden" value="pf0TlysDsLlLA2PoG2XjDzTLuYYwK2ME1k+K/eWHvR0RkPE5cQydVBGlzdwdXuWtJ25DudCfg8VnjN7XnTM9Yg==" /></div>
             <button class="dropdown-item dropdown-signout" data-ga-click="Header, sign out, icon:logout">
               Sign out
             </button>
@@ -261,7 +261,7 @@
 <ul class="pagehead-actions">
 
   <li>
-        <!-- </textarea> --><!-- '"` --><form accept-charset="UTF-8" action="/notifications/subscribe" class="js-social-container" data-autosubmit="true" data-form-nonce="f0706702564eed047becc023130d2776eb932fb9" data-remote="true" method="post"><div style="margin:0;padding:0;display:inline"><input name="utf8" type="hidden" value="&#x2713;" /><input name="authenticity_token" type="hidden" value="ziPdq2G3GpWTfX3ip4s/2UmgR8s+ijWqct4GCvoeQCBCiDN5xJO4+TjTQJMs8Yx/zotWfObos6Pbcw6G6bE/QQ==" /></div>      <input id="repository_id" name="repository_id" type="hidden" value="51084645" />
+        <!-- </textarea> --><!-- '"` --><form accept-charset="UTF-8" action="/notifications/subscribe" class="js-social-container" data-autosubmit="true" data-form-nonce="f0706702564eed047becc023130d2776eb932fb9" data-remote="true" method="post"><div style="margin:0;padding:0;display:inline"><input name="utf8" type="hidden" value="&#x2713;" /><input name="authenticity_token" type="hidden" value="4eweCi17/LIKTFElgsI5Tw9EbbfHI1kHuMeBSs0YKVyi//mBwFmBVG1hyCQ/FBegwbdugU1UUO3KFXcq5eikwg==" /></div>      <input id="repository_id" name="repository_id" type="hidden" value="51084645" />
 
         <div class="select-menu js-menu-container js-select-menu">
           <a href="/Miyagee/blacktap/subscription"
@@ -336,7 +336,7 @@
     
   <div class="js-toggler-container js-social-container starring-container ">
 
-    <!-- </textarea> --><!-- '"` --><form accept-charset="UTF-8" action="/Miyagee/blacktap/unstar" class="js-toggler-form starred" data-form-nonce="f0706702564eed047becc023130d2776eb932fb9" data-remote="true" method="post"><div style="margin:0;padding:0;display:inline"><input name="utf8" type="hidden" value="&#x2713;" /><input name="authenticity_token" type="hidden" value="IEOSp6RCEwTGy2ug/5gV0SdzJtlE2IlSVp4T3gEqT3VPUrvG9OgP10hKn0ZuGyXWvf3B8lGR4ALe8bFK1vp/rg==" /></div>
+    <!-- </textarea> --><!-- '"` --><form accept-charset="UTF-8" action="/Miyagee/blacktap/unstar" class="js-toggler-form starred" data-form-nonce="f0706702564eed047becc023130d2776eb932fb9" data-remote="true" method="post"><div style="margin:0;padding:0;display:inline"><input name="utf8" type="hidden" value="&#x2713;" /><input name="authenticity_token" type="hidden" value="t00x7w7HLNEuIltm3CF4fMklguENt+G1KklFgGkt7DNivt9LARws5t1sVwCtoycZptE/76uLMW7LbzSMeeamww==" /></div>
       <button
         class="btn btn-sm btn-with-count js-toggler-target"
         aria-label="Unstar this repository" title="Unstar Miyagee/blacktap"
@@ -348,7 +348,7 @@
           0
         </a>
 </form>
-    <!-- </textarea> --><!-- '"` --><form accept-charset="UTF-8" action="/Miyagee/blacktap/star" class="js-toggler-form unstarred" data-form-nonce="f0706702564eed047becc023130d2776eb932fb9" data-remote="true" method="post"><div style="margin:0;padding:0;display:inline"><input name="utf8" type="hidden" value="&#x2713;" /><input name="authenticity_token" type="hidden" value="olOfW4TxCANrqRufuUaVTml+llE47Ta2Dc7IbCK1zsDtKb9h04XWeIxFFIu5ywSOoPtfmTyVwWRfIb8t9dNI3w==" /></div>
+    <!-- </textarea> --><!-- '"` --><form accept-charset="UTF-8" action="/Miyagee/blacktap/star" class="js-toggler-form unstarred" data-form-nonce="f0706702564eed047becc023130d2776eb932fb9" data-remote="true" method="post"><div style="margin:0;padding:0;display:inline"><input name="utf8" type="hidden" value="&#x2713;" /><input name="authenticity_token" type="hidden" value="6czxp9/2dZTXd086zcql2H7XrVyuMfNs5WG1skpE232yuaDt4dQNYc3XlQtz9Xx/I3bmXkyFezug2pU0bTUVQA==" /></div>
       <button
         class="btn btn-sm btn-with-count js-toggler-target"
         aria-label="Star this repository" title="Star Miyagee/blacktap"
@@ -364,7 +364,7 @@
   </li>
 
   <li>
-          <!-- </textarea> --><!-- '"` --><form accept-charset="UTF-8" action="/Miyagee/blacktap/fork" class="btn-with-count" data-form-nonce="f0706702564eed047becc023130d2776eb932fb9" method="post"><div style="margin:0;padding:0;display:inline"><input name="utf8" type="hidden" value="&#x2713;" /><input name="authenticity_token" type="hidden" value="3T2wolFoA6um0QOv3uj2IMhlt7A36uNsaVDjgJ1HIkT5kkKuCQ6ODS4H1RiE1fgwHMgPS11rAVqUtbNOeJyMWQ==" /></div>
+          <!-- </textarea> --><!-- '"` --><form accept-charset="UTF-8" action="/Miyagee/blacktap/fork" class="btn-with-count" data-form-nonce="f0706702564eed047becc023130d2776eb932fb9" method="post"><div style="margin:0;padding:0;display:inline"><input name="utf8" type="hidden" value="&#x2713;" /><input name="authenticity_token" type="hidden" value="9gnGxRjdRAfkpsP03eU8/D+rew5O/b0x+1+Q9T+Qg1IFiO226Ktm1fl2YBpQrV5VyWoodK8ml/AgfNOvq0HhdQ==" /></div>
             <button
                 type="submit"
                 class="btn btn-sm btn-with-count"
@@ -449,7 +449,7 @@
 
     
 
-<a href="/Miyagee/blacktap/blob/b5858640b654de24b21ed80acdb8442353d0abdd/src/DataParser.py" class="hidden js-permalink-shortcut" data-hotkey="y">Permalink</a>
+<a href="/Miyagee/blacktap/blob/bf3deb2519da0bb2e05cf8b2a27685b7d4a84f1b/src/DataParser.py" class="hidden js-permalink-shortcut" data-hotkey="y">Permalink</a>
 
 <!-- blob contrib key: blob_contributors:v21:e17e08b01d5d02282faadb810890485f -->
 
@@ -544,7 +544,7 @@
             </a>
         </div>
 
-          <!-- </textarea> --><!-- '"` --><form accept-charset="UTF-8" action="/Miyagee/blacktap/branches" class="js-create-branch select-menu-item select-menu-new-item-form js-navigation-item js-new-item-form" data-form-nonce="f0706702564eed047becc023130d2776eb932fb9" method="post"><div style="margin:0;padding:0;display:inline"><input name="utf8" type="hidden" value="&#x2713;" /><input name="authenticity_token" type="hidden" value="L1412aa34k4l1w6KD/iKkor/xs5ZqosQrKuWrlnZwStBcnrsnHQ2Kw3vlPPDIZjIOySZp3WqX5U1r9vtVRMSjg==" /></div>
+          <!-- </textarea> --><!-- '"` --><form accept-charset="UTF-8" action="/Miyagee/blacktap/branches" class="js-create-branch select-menu-item select-menu-new-item-form js-navigation-item js-new-item-form" data-form-nonce="f0706702564eed047becc023130d2776eb932fb9" method="post"><div style="margin:0;padding:0;display:inline"><input name="utf8" type="hidden" value="&#x2713;" /><input name="authenticity_token" type="hidden" value="q8HHoWwESe4MDImF6vSFvKQ41OLaVyUdqoB2U7Tgi+i+LOGkg+ddj7cej//pG2Yp+TW6JUtNvR36VjY042m/dA==" /></div>
           <svg aria-hidden="true" class="octicon octicon-git-branch select-menu-item-icon" height="16" role="img" version="1.1" viewBox="0 0 10 16" width="10"><path d="M10 5c0-1.11-0.89-2-2-2s-2 0.89-2 2c0 0.73 0.41 1.38 1 1.72v0.3c-0.02 0.52-0.23 0.98-0.63 1.38s-0.86 0.61-1.38 0.63c-0.83 0.02-1.48 0.16-2 0.45V4.72c0.59-0.34 1-0.98 1-1.72 0-1.11-0.89-2-2-2S0 1.89 0 3c0 0.73 0.41 1.38 1 1.72v6.56C0.41 11.63 0 12.27 0 13c0 1.11 0.89 2 2 2s2-0.89 2-2c0-0.53-0.2-1-0.53-1.36 0.09-0.06 0.48-0.41 0.59-0.47 0.25-0.11 0.56-0.17 0.94-0.17 1.05-0.05 1.95-0.45 2.75-1.25s1.2-1.98 1.25-3.02h-0.02c0.61-0.36 1.02-1 1.02-1.73zM2 1.8c0.66 0 1.2 0.55 1.2 1.2s-0.55 1.2-1.2 1.2-1.2-0.55-1.2-1.2 0.55-1.2 1.2-1.2z m0 12.41c-0.66 0-1.2-0.55-1.2-1.2s0.55-1.2 1.2-1.2 1.2 0.55 1.2 1.2-0.55 1.2-1.2 1.2z m6-8c-0.66 0-1.2-0.55-1.2-1.2s0.55-1.2 1.2-1.2 1.2 0.55 1.2 1.2-0.55 1.2-1.2 1.2z"></path></svg>
             <div class="select-menu-item-text">
               <span class="select-menu-item-heading">Create branch: <span class="js-new-item-name"></span></span>
@@ -610,12 +610,12 @@
             <svg aria-hidden="true" class="octicon octicon-device-desktop" height="16" role="img" version="1.1" viewBox="0 0 16 16" width="16"><path d="M15 2H1c-0.55 0-1 0.45-1 1v9c0 0.55 0.45 1 1 1h5.34c-0.25 0.61-0.86 1.39-2.34 2h8c-1.48-0.61-2.09-1.39-2.34-2h5.34c0.55 0 1-0.45 1-1V3c0-0.55-0.45-1-1-1z m0 9H1V3h14v8z"></path></svg>
         </a>
 
-        <!-- </textarea> --><!-- '"` --><form accept-charset="UTF-8" action="/Miyagee/blacktap/edit/merge_branch/src/DataParser.py" class="inline-form js-update-url-with-hash" data-form-nonce="f0706702564eed047becc023130d2776eb932fb9" method="post"><div style="margin:0;padding:0;display:inline"><input name="utf8" type="hidden" value="&#x2713;" /><input name="authenticity_token" type="hidden" value="0XHPOqDGRm0WK5HFfKXf1CtqI85x++yWp56uuNqIUDDBbuYS6jPtx30IojAd6ew2RsyrgcZvp5YMubzJywuZ/Q==" /></div>
+        <!-- </textarea> --><!-- '"` --><form accept-charset="UTF-8" action="/Miyagee/blacktap/edit/merge_branch/src/DataParser.py" class="inline-form js-update-url-with-hash" data-form-nonce="f0706702564eed047becc023130d2776eb932fb9" method="post"><div style="margin:0;padding:0;display:inline"><input name="utf8" type="hidden" value="&#x2713;" /><input name="authenticity_token" type="hidden" value="XL2VwlsZ59xVEp/d5/ccVQSs/GigTjD2phjPk+Rg2OTXdOXsUSX/AfSVqDREFto0xPxJr4wkgfkXUaU8nSqsKA==" /></div>
           <button class="btn-octicon tooltipped tooltipped-nw" type="submit"
             aria-label="Edit this file" data-hotkey="e" data-disable-with>
             <svg aria-hidden="true" class="octicon octicon-pencil" height="16" role="img" version="1.1" viewBox="0 0 14 16" width="14"><path d="M0 12v3h3l8-8-3-3L0 12z m3 2H1V12h1v1h1v1z m10.3-9.3l-1.3 1.3-3-3 1.3-1.3c0.39-0.39 1.02-0.39 1.41 0l1.59 1.59c0.39 0.39 0.39 1.02 0 1.41z"></path></svg>
           </button>
-</form>        <!-- </textarea> --><!-- '"` --><form accept-charset="UTF-8" action="/Miyagee/blacktap/delete/merge_branch/src/DataParser.py" class="inline-form" data-form-nonce="f0706702564eed047becc023130d2776eb932fb9" method="post"><div style="margin:0;padding:0;display:inline"><input name="utf8" type="hidden" value="&#x2713;" /><input name="authenticity_token" type="hidden" value="P3r6bAp5m/3P2F0iy4wqAkpWhS4TeFbH3neP06WLcGRbXRHiYqn+8WOqa0CxSPM7v/oxyoYKT6UDTE6ph2FLLg==" /></div>
+</form>        <!-- </textarea> --><!-- '"` --><form accept-charset="UTF-8" action="/Miyagee/blacktap/delete/merge_branch/src/DataParser.py" class="inline-form" data-form-nonce="f0706702564eed047becc023130d2776eb932fb9" method="post"><div style="margin:0;padding:0;display:inline"><input name="utf8" type="hidden" value="&#x2713;" /><input name="authenticity_token" type="hidden" value="nym0asEaiSxO4foNxfN07Jt5CyVqoBDF+H2RRjS8D68PMgME1fcg4W8B8BIwdrqex0Go3V7bGDYec1S5MohmDQ==" /></div>
           <button class="btn-octicon btn-octicon-danger tooltipped tooltipped-nw" type="submit"
             aria-label="Delete this file" data-disable-with>
             <svg aria-hidden="true" class="octicon octicon-trashcan" height="16" role="img" version="1.1" viewBox="0 0 12 16" width="12"><path d="M10 2H8c0-0.55-0.45-1-1-1H4c-0.55 0-1 0.45-1 1H1c-0.55 0-1 0.45-1 1v1c0 0.55 0.45 1 1 1v9c0 0.55 0.45 1 1 1h7c0.55 0 1-0.45 1-1V5c0.55 0 1-0.45 1-1v-1c0-0.55-0.45-1-1-1z m-1 12H2V5h1v8h1V5h1v8h1V5h1v8h1V5h1v9z m1-10H1v-1h9v1z"></path></svg>
@@ -1053,7 +1053,7 @@
       <svg aria-hidden="true" class="octicon octicon-mark-github" height="24" role="img" title="GitHub " version="1.1" viewBox="0 0 16 16" width="24"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59 0.4 0.07 0.55-0.17 0.55-0.38 0-0.19-0.01-0.82-0.01-1.49-2.01 0.37-2.53-0.49-2.69-0.94-0.09-0.23-0.48-0.94-0.82-1.13-0.28-0.15-0.68-0.52-0.01-0.53 0.63-0.01 1.08 0.58 1.23 0.82 0.72 1.21 1.87 0.87 2.33 0.66 0.07-0.52 0.28-0.87 0.51-1.07-1.78-0.2-3.64-0.89-3.64-3.95 0-0.87 0.31-1.59 0.82-2.15-0.08-0.2-0.36-1.02 0.08-2.12 0 0 0.67-0.21 2.2 0.82 0.64-0.18 1.32-0.27 2-0.27 0.68 0 1.36 0.09 2 0.27 1.53-1.04 2.2-0.82 2.2-0.82 0.44 1.1 0.16 1.92 0.08 2.12 0.51 0.56 0.82 1.27 0.82 2.15 0 3.07-1.87 3.75-3.65 3.95 0.29 0.25 0.54 0.73 0.54 1.48 0 1.07-0.01 1.93-0.01 2.2 0 0.21 0.15 0.46 0.55 0.38C13.71 14.53 16 11.53 16 8 16 3.58 12.42 0 8 0z"></path></svg>
 </a>
     <ul class="site-footer-links">
-      <li>&copy; 2016 <span title="0.17595s from github-fe143-cp1-prd.iad.github.net">GitHub</span>, Inc.</li>
+      <li>&copy; 2016 <span title="0.10560s from github-fe116-cp1-prd.iad.github.net">GitHub</span>, Inc.</li>
         <li><a href="https://github.com/site/terms" data-ga-click="Footer, go to terms, text:terms">Terms</a></li>
         <li><a href="https://github.com/site/privacy" data-ga-click="Footer, go to privacy, text:privacy">Privacy</a></li>
         <li><a href="https://github.com/security" data-ga-click="Footer, go to security, text:security">Security</a></li>

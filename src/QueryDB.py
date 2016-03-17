@@ -49,15 +49,15 @@ class QueryDB:
 														"`latitude`," +\
 														"`longitude`" +\
 														") VALUES (" + "'1',")
-		query = query + "'" + timestamp + "'," + str(self.trip_id) + "',"
+		query = query + "'" + timestamp + "'," + str(self.trip_id) + ","
 		
 		for index in range(1, len(sortedResults)):
 			if len(sortedResults[index]) > 0:
-				query = query + "'" + str(sortedResults[index][0]) + "'"
+				query = query + str(sortedResults[index][0])
 			else:
-				query = query + "'0'"
+				query = query + "0"
 			if index != 20:
 				query = query + ","
 		query = query + ");"
 		print query
-		#self.cursor.execute(query)
+		self.cursor.execute(query)
