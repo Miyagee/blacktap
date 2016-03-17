@@ -3,6 +3,7 @@ import json
 import time
 import threading
 import socket
+import time
 
 class FileStream(threading.Thread):
 
@@ -28,13 +29,15 @@ class FileStream(threading.Thread):
 
     def run(self):
         connection, _ = self._server.accept()
-        for line in self._data_file:
+        data = self._data_file.readlines()
+
+        for line in data:
             next_time = json.loads(line)['timestamp']
             if self._virt_start_time is None:
                 self._virt_start_time = next_time
                 self._real_start_time = time.time()
             else:
-                time.sleep(max(0, self._rel(next_time) - self._now()))
+                time.sleep(max(0, self._rel(next_time)-self._now()))
 
             connection.send(line.encode('utf-8'))
 

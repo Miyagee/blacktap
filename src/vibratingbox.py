@@ -13,6 +13,7 @@ class VibratingBox:
         self._dy = 0
         self._vy = 0
         self._time = None
+        self._id = None
 
         self._gravity = 800
 
@@ -28,7 +29,9 @@ class VibratingBox:
             dt = time.time() - self._time
             self._time = time.time()
 
+            old_dy = self._dy
             old_vy = self._vy
+
             self._vy += self._gravity * dt
             self._dy += self._vy * dt
 
@@ -36,28 +39,12 @@ class VibratingBox:
                 self._vy = -0.8 * old_vy
                 self._dy = 0
 
-        self._canvas.create_image( (self._position[0], self._position[1] + \
-            self._dy), image=self._image_tk)
-
+        if self._id is None:
+            self._id = self._canvas.create_image( (self._position[0], self._position[1] + \
+                self._dy), image=self._image_tk)
+        else:
+            self._canvas.move(self._id, 0, self._dy - old_dy)  # takes dx, dy arguments
 
     def set_vibrate(self, value):
         self._vibrate_value = value
         self._time = None
-
-if __name__ == '__main__':
-
-    def update(root, canvas, vb):
-        canvas.delete("all")
-        vb.draw()
-        root.after(20, lambda : update(root, canvas, vb))
-
-    root = Tk()
-    canvas = Canvas(root, height = 500, width = 500)
-    im = Image.open("s.png")
-    im = im.convert("RGB")
-    canvas.pack()
-
-    vb = VibratingBox((250, 250), im, canvas)
-    vb.set_vibrate(10)
-    root.after(20, lambda : update(root, canvas, vb))
-    root.mainloop()

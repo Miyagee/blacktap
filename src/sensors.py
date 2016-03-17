@@ -41,6 +41,7 @@ class Sensors(threading.Thread):
         """Get the last data object satisfying the predicate 'pred'"""
         Sensors._add_reader()
         if not Sensors._data:
+            Sensors._remove_reader()
             return
         before = Sensors._data[-1]["timestamp"] - max_age
         for obj in reversed(Sensors._data):
@@ -56,6 +57,7 @@ class Sensors(threading.Thread):
         """Adds all data which satisfies the predicate 'pred' in the max_age last seconds to 'ret'"""
         Sensors._add_reader()
         if not Sensors._data:
+            Sensors._remove_reader()
             return
         before = Sensors._data[-1]["timestamp"] - max_age
         objs = []
