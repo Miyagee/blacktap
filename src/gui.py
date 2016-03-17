@@ -80,7 +80,7 @@ class GUI(Tk):
             mapimg = self._map[self._coords[0],
                     self._coords[1]].crop((0, 50, 500, 450))
         else:
-            mapimg = Image.new("RGB", (500, 500)) # open("resources/logo.jpg")
+            mapimg = Image.open("resources/logo.jpg")
         self._map_img.paste(mapimg, (1,1))
         self._map_tk = ImageTk.PhotoImage(self._map_img)
         if self._map_id is None:
