@@ -48,3 +48,5 @@ class VibratingBox:
     def set_vibrate(self, value):
         self._vibrate_value = value
         self._time = None
+        self._dy = 0
+        self._vy = 0

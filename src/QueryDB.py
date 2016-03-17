@@ -14,14 +14,16 @@ class QueryDB:
 	#Finding the last trip id in database data table
 	def find_trip_id(self):
 		self.cursor.execute("SELECT MAX(tripId) FROM `skyclouds_blacktap`.`data`")
-		self.trip_id = self.cursor.fetchone()
+		#self.trip_id = self.cursor.fetchone()
+                #self.trip_id += 1
+                self.trip_id = 1
 	
 	#Loop the result list, send query according to result name
 	def query(self, sortedResults):
 		timestamp = datetime.datetime.fromtimestamp(int(sortedResults[0])).strftime('%Y-%m-%d %H:%M:%S')
 		
 		#Updating trip id
-		find_trip_id()
+		self.find_trip_id()
 		
 		query = ("INSERT INTO `skyclouds_blacktap`.`data` (" +\
 														"`bil_idBil`," +\
@@ -47,11 +49,11 @@ class QueryDB:
 														"`latitude`," +\
 														"`longitude`" +\
 														") VALUES (" + "'1',")
-		query = query + "'" + timestamp + "'," + self.trip_id + "',"
+		query = query + "'" + timestamp + "'," + str(self.trip_id) + "',"
 		
 		for index in range(1, len(sortedResults)):
 			if len(sortedResults[index]) > 0:
-				query = query + "'" + sortedResults[index][0] + "'"
+				query = query + "'" + str(sortedResults[index][0]) + "'"
 			else:
 				query = query + "'0'"
 			if index != 20:
