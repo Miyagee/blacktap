@@ -63,10 +63,16 @@ class Main:
 
             data = []
             Sensors.get_last(lambda obj : obj['name'] == 'speed_limit', data)
+            speeds = []
+            Sensors.get_last(lambda obj : obj['name'] == 'vehicle_speed',
+                    speeds)
             if data and data[0]['value'] != self._speed_limit:
-                if self._speed_limit != data[0]['value']:
-                    self._gui.set_speed_limit(data[0]['value'])
+                self._gui.set_speed_limit(data[0]['value'])
                 self._speed_limit = data[0]['value']
+            if speeds and self._speed_limit and 1.8*speeds[0]['value'] > 1.1 * self._speed_limit:
+                self._gui._speed_limit_sym.set_vibrate(12 * (1.8*speeds[0]['value'] -
+                        self._speed_limit) / self._speed_limit)
+                print(12 * (1.8*speeds[0]['value'] - self._speed_limit) / self._speed_limit)
 
     def _sender(self):
         while True:
