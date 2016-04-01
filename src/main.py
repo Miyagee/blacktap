@@ -5,10 +5,12 @@ from distributor import Distributor
 from time import sleep
 from gui import GUI
 from sensors import Sensors
+from green import Green
 from turnSignalAnalyzer import TurnSignalAnalyzer
 import numpy as np
 import threading
 import time
+from queue import Queue
 
 class Main:
     def __init__(self):
@@ -27,6 +29,7 @@ class Main:
         self._forgot_signals_event = threading.Event()
         self._last_turn_forget = None
         self._turn_analyzer = TurnSignalAnalyzer(self._forgot_signals_event)
+        self._green = Green(Queue(),1)
 
         t = threading.Thread(target=self._mainloop)
         t.daemon = True
