@@ -3,6 +3,8 @@
 # Because Daniel
 .DS_Store
 
+*.pyc
+
 # Mobile Tools for Java (J2ME)
 .mtj.tmp/
 
