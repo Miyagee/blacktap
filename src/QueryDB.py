@@ -10,20 +10,27 @@ class QueryDB:
 	def __init__(self, db):
 		self.cursor = db.cursor()
 		self.trip_id = 0
+                self._db = db
+                self._last_time = None
 	
 	#Finding the last trip id in database data table
 	def find_trip_id(self):
 		self.cursor.execute("SELECT MAX(tripId) FROM `skyclouds_blacktap`.`data`")
-		#self.trip_id = self.cursor.fetchone()
-                #self.trip_id += 1
-                self.trip_id = 1
+		self.trip_id = self.cursor.fetchone()[0]
+                if self.trip_id is None:
+                    self.trip_id = 1
+                else:
+                    self.trip_id += 1
+                print self.trip_id
 	
 	#Loop the result list, send query according to result name
 	def query(self, sortedResults):
 		timestamp = datetime.datetime.fromtimestamp(int(sortedResults[0])).strftime('%Y-%m-%d %H:%M:%S')
+                if self._last_time == timestamp:
+                    return
+                self._last_time = timestamp
 		
 		#Updating trip id
-		self.find_trip_id()
 		
 		query = ("INSERT INTO `skyclouds_blacktap`.`data` (" +\
 														"`bil_idBil`," +\
@@ -56,8 +63,9 @@ class QueryDB:
 				query = query + str(sortedResults[index][0])
 			else:
 				query = query + "0"
-			if index != 20:
+			if index != 19:
 				query = query + ","
+                        print index
 		query = query + ");"
-		print query
 		self.cursor.execute(query)
+                self._db.commit()
