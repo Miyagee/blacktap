@@ -7,6 +7,7 @@ from gui import GUI
 from sensors import Sensors
 from green import Green
 from turnSignalAnalyzer import TurnSignalAnalyzer
+from speedingAnalyzer import SpeedingAnalyzer
 import numpy as np
 import threading
 import time
@@ -23,12 +24,16 @@ class Main:
 
         self._send_frequency = 1
         self._speed_limit = None
+        self._speed_time = None
 
         self._gui = None
 
         self._forgot_signals_event = threading.Event()
+        self._speeding_event = threading.Event()
+        self._speeding_event.speed_limit = None
         self._last_turn_forget = None
         self._turn_analyzer = TurnSignalAnalyzer(self._forgot_signals_event)
+        self._speeding_analyzer = SpeedingAnalyzer(self._speeding_event)
         self._green = Green(Queue(),1)
 
         t = threading.Thread(target=self._mainloop)
@@ -37,10 +42,10 @@ class Main:
 
         self._gui = GUI()
 
-        self._distributor = Distributor('upload_stream.sock',self._send_frequency)
-        s = threading.Thread(target=self._sender)
-        s.daemon = True
-        s.start()
+        #self._distributor = Distributor('upload_stream.sock',self._send_frequency)
+        #s = threading.Thread(target=self._sender)
+        #s.daemon = True
+        #s.start()
 
         self._gui.mainloop()
 
@@ -64,18 +69,16 @@ class Main:
             if self._last_turn_forget is not None and time.time() - self._last_turn_forget > 3:
                 self._gui._turn_signal_sym.set_vibrate(0)
 
-            data = []
-            Sensors.get_last(lambda obj : obj['name'] == 'speed_limit', data)
-            speeds = []
-            Sensors.get_last(lambda obj : obj['name'] == 'vehicle_speed',
-                    speeds)
-            if data and data[0]['value'] != self._speed_limit:
-                self._gui.set_speed_limit(data[0]['value'])
-                self._speed_limit = data[0]['value']
-            if speeds and self._speed_limit and 1.8*speeds[0]['value'] > 1.1 * self._speed_limit:
-                self._gui._speed_limit_sym.set_vibrate(12 * (1.8*speeds[0]['value'] -
-                        self._speed_limit) / self._speed_limit)
-                print(12 * (1.8*speeds[0]['value'] - self._speed_limit) / self._speed_limit)
+            if self._speed_limit != self._speeding_event.speed_limit:
+                self._speed_limit = self._speeding_event.speed_limit
+                self._gui.set_speed_limit(self._speed_limit)
+            if self._speeding_event.is_set():
+                self._gui._speed_limit_sym.set_vibrate(10 * self._speeding_event.speeding_percentage)
+                self._speeding_event.clear()
+                self._speed_time = time.time()
+            elif self._speed_time is not None and time.time()-self._speed_time > 2:
+                self._gui._speed_limit_sym.set_vibrate(0)
+
 
     def _sender(self):
         while True:
