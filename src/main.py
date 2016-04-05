@@ -34,10 +34,10 @@ class Main:
 
         self._gui = GUI()
 
-        #self._distributor = Distributor('upload_stream.sock',self._send_frequency)
-        #s = threading.Thread(target=self._sender)
-        #s.daemon = True
-        #s.start()
+        self._distributor = Distributor('upload_stream.sock',self._send_frequency)
+        s = threading.Thread(target=self._sender)
+        s.daemon = True
+        s.start()
 
         self._gui.mainloop()
 

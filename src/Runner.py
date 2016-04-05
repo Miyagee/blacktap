@@ -43,6 +43,7 @@ class Runner(object):
 		
 		#Query class object getting ready to query database
 		query_db = QueryDB(db)
+                query_db.find_trip_id()
 
 		while True:
 			

@@ -45,7 +45,7 @@ class Sensors(threading.Thread):
             return
         before = Sensors._data[-1]["timestamp"] - max_age
         for obj in reversed(Sensors._data):
-            if obj["timestamp"] < before:
+            if obj["timestamp"] <= before:
                 break
             elif pred(obj):
                 ret.append(obj)
@@ -62,7 +62,7 @@ class Sensors(threading.Thread):
         before = Sensors._data[-1]["timestamp"] - max_age
         objs = []
         for obj in reversed(Sensors._data):
-            if num_limit == len(objs) or obj["timestamp"] < before:
+            if num_limit == len(objs) or obj["timestamp"] <= before:
                 break
             elif pred(obj):
                 objs.append(obj)

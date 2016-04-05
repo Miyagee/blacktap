@@ -12,7 +12,7 @@ class Distributor(object):
         self._socket_address = address
 
         self._socket.connect(self._socket_address)
-        self._period = 1 / frequency
+        self._period = 1 / frequency 
 
         self._datas = [  # name, function tuple
                 ('accelerator_pedal_position', self._average),
