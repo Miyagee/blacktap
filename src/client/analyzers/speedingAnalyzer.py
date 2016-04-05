@@ -53,11 +53,11 @@ class SpeedingAnalyzer(threading.Thread):
         Distributor.analyzes.put( {
             'type' : 'speeding',
             'points' : self._points,
-            'start_time' : self._start_time,
-            'end_time' : self._end_time,
-            'max_speed' : max(self._velocities),
-            'avg_speed' : sum(self._velocities) / len(self._velocities),
-            'speed_limit' : self._event.speed_limit })
+            'start time' : self._start_time,
+            'end time' : self._end_time,
+            'max speed' : max(self._velocities),
+            'avg speed' : sum(self._velocities) / len(self._velocities),
+            'speed limit' : self._event.speed_limit })
 
         self._start_time = None
         self._end_time = None
