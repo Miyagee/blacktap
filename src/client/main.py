@@ -6,8 +6,8 @@ from time import sleep
 from gui import GUI
 from sensors import Sensors
 from green import Green
-from turnSignalAnalyzer import TurnSignalAnalyzer
-from speedingAnalyzer import SpeedingAnalyzer
+from analyzers.turnSignalAnalyzer import TurnSignalAnalyzer
+from analyzers.speedingAnalyzer import SpeedingAnalyzer
 import numpy as np
 import threading
 import time
@@ -16,7 +16,7 @@ from queue import Queue
 class Main:
     def __init__(self):
         self._socket_address = 'data_stream.sock'
-        self._stream = FileStream("downtown-east2_turn_sigs.json",
+        self._stream = FileStream("../../gen_data/downtown-east2_turn_sigs.json",
                 self._socket_address)
         self._receiver = Receiver(self._socket_address)
         self._geo_listen = Geometry()
