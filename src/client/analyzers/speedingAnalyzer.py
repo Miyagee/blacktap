@@ -58,7 +58,6 @@ class SpeedingAnalyzer(threading.Thread):
             'max speed' : max(self._velocities),
             'avg speed' : sum(self._velocities) / len(self._velocities),
             'speed limit' : self._event.speed_limit })
-        print(Distributor.analyzes.get(), "\n\n") # REMOVE ME PL0X
 
         self._start_time = None
         self._end_time = None
