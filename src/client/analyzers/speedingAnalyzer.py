@@ -24,7 +24,7 @@ class SpeedingAnalyzer(threading.Thread):
             Sensors.get_last(lambda obj : obj['name'] == 'vehicle_speed', vehic_speed)
 
             speed_lim = speed_lim[0]['value'] if speed_lim else None
-            vehic_speed = vehic_speed[0]['value']*1.8 if vehic_speed else None
+            vehic_speed = vehic_speed[0]['value'] if vehic_speed else None
             if speed_lim:
 
                 pos = []

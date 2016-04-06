@@ -54,6 +54,8 @@ class TripSimulator(tkinter.Tk):
         self.adding_turn_signals = False # For creating new data set with turn signals
         self.signal_blink_time = time.time()
 
+        self.velocities = []
+
         self.update_image() # Periodic tasks
         self.mainloop()
 
@@ -91,6 +93,8 @@ class TripSimulator(tkinter.Tk):
 
             self.destroy()
             exit()
+        elif key.keycode == 65651: # "s" save speed_limits
+            self.stream.calculate_speed_limits()
         else:
             print("Key =", key.keycode)
 
@@ -127,7 +131,7 @@ class TripSimulator(tkinter.Tk):
             lat = data['latitude'][-1][0] if len(data['latitude']) > 0 else None
             lng = data['longitude'][-1][0] if len(data['longitude']) > 0 else None
 
-            speed = 1.6 * data['vehicle_speed'][-1][0] if len(data['vehicle_speed']) > 0 else None
+            speed = data['vehicle_speed'][-1][0] if len(data['vehicle_speed']) > 0 else None
             speed_limit = data['speed_limit'][-1][0] if len(data['speed_limit']) > 0 else None
 
             wheel_angle = data['steering_wheel_angle'][-1][0] if len(data['steering_wheel_angle']) > 0 else None
@@ -160,7 +164,7 @@ class TripSimulator(tkinter.Tk):
     def interpolate(self, speed):
         r = np.array(self.last_direction)
         r /= np.linalg.norm(r)
-        r *= 0.5 / 3.6 / 2.5 * (self.last_speed + speed) * (time.time() - self.interpolate_time) * self.stream.get_speed() # 2.5 is a magic constant :-(
+        r *= 0.5 / 3.6 / 1.4 * (self.last_speed + speed) * (time.time() - self.interpolate_time) * self.stream.get_speed() # 2.5 is a magic constant :-(
 
         self.interpolate_time = time.time()
         self.inter_lat += r[0] / 111111
@@ -315,5 +319,5 @@ class TripSimulator(tkinter.Tk):
         return s
 
 if __name__ == "__main__":
-    sim = TripSimulator("downtown-east2_turn_sigs.json")
+    sim = TripSimulator("../../gen_data/downtown-east2_only_turn_sigs.json")
     #sim = TripSimulator(*["records/"+filename for filename in os.listdir("records/")])
