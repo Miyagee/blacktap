@@ -63,8 +63,9 @@ class Geometry(threading.Thread):
 
             dt = time.time() - self._time_mem[1]
             if Geometry._a is not None:
-                Geometry._inter_pos = list(np.array(p2) + Geometry._r_to_coords(
-                        dt*Geometry._v + 0.5*dt**2*Geometry._a))
+                #Geometry._inter_pos = list(np.array(p2) + Geometry._r_to_coords(dt*Geometry._v + 0.5*dt**2*Geometry._a))
+                p0, p1, p2 = (np.array(p) for p in (p0, p1, p2))
+                Geometry._inter_pos = list(p2 + (p2-p1)/(t2-t1)*dt + 0.5* ((p2-p1)/(t2-t1) - (p1-p0)/(t1-t0)) / ((t2+t1)/2 - (t1+t0)/2)*dt**2)
 
             Geometry._build_marker()
 
