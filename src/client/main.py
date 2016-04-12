@@ -6,8 +6,10 @@ from time import sleep
 from gui import GUI
 from sensors import Sensors
 from green import Green
+from evaluatebox import EvaluateBox
 from analyzers.turnSignalAnalyzer import TurnSignalAnalyzer
 from analyzers.speedingAnalyzer import SpeedingAnalyzer
+from analyzers.aggressiveAnalyzer import AggressiveAnalyzer
 import numpy as np
 import threading
 import time
@@ -29,17 +31,21 @@ class Main:
 
         self._forgot_signals_event = threading.Event()
         self._speeding_event = threading.Event()
+        self._aggressive_event = threading.Event()
         self._speeding_event.speed_limit = None
         self._last_turn_forget = None
         self._turn_analyzer = TurnSignalAnalyzer(self._forgot_signals_event)
         self._speeding_analyzer = SpeedingAnalyzer(self._speeding_event)
         self._green = Green(1)
+        self._aggressive_analyze = AggressiveAnalyzer(self._aggressive_event)
+        self._evaluatebox_last_time = None
+
+        self._gui = GUI()
 
         t = threading.Thread(target=self._mainloop)
         t.daemon = True
         t.start()
 
-        self._gui = GUI()
 
         #self._distributor = Distributor('upload_stream.sock',self._send_frequency)
         #s = threading.Thread(target=self._sender)
@@ -51,6 +57,9 @@ class Main:
     def _mainloop(self):
         while True:
             sleep(1 / self._frequency)
+            if self._evaluatebox_last_time is None or self._evaluatebox_last_time - time.time() > 5:
+                self._evaluatebox_last_time = None
+                self._gui._evaluate_box.set_value(EvaluateBox.GOOD)
             if self._gui is None:
                 continue
             if Geometry._pos is not None:
@@ -67,6 +76,11 @@ class Main:
                 self._forgot_signals_event.clear()
             if self._last_turn_forget is not None and time.time() - self._last_turn_forget > 3:
                 self._gui._turn_signal_sym.set_vibrate(0)
+
+            if self._aggressive_event.is_set():
+                self._gui._evaluate_box.set_value(EvaluateBox.BAD)
+                self._evaluatebox_last_time = time.time()
+                self._aggressive_event.clear()
 
             if self._speed_limit != self._speeding_event.speed_limit:
                 self._speed_limit = self._speeding_event.speed_limit
