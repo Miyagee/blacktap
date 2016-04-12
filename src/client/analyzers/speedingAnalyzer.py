@@ -52,7 +52,7 @@ class SpeedingAnalyzer(threading.Thread):
     def _send(self):
         Distributor.analyzes.put( {
             'type' : 'speeding',
-            'points' : self._points,
+            'points' : self._points,  #list of 2-tuples
             'start_time' : self._start_time,
             'end_time' : self._end_time,
             'max_speed' : max(self._velocities),
