@@ -23,10 +23,6 @@ class GUI(Tk):
         self._turn_signal_sym = VibratingBox((100, 175),
                 Image.open("resources/turn_signal_symbol.jpg"), self._canvas)
         self._evaluate_box = EvaluateBox((450, 175), self._canvas)
-        #self._thumbs_down_sym = VibratingBox((450, 175),
-        #        Image.open("resources/thumbs_down_symbol.jpg"), self._canvas)
-        #self._thumbs_up_sym = VibratingBox((450, 175),
-        #        Image.open("resources/thumbs_up_symbol.jpg"), self._canvas)
         self._marker = None
         self._marker_id = None
 
@@ -101,10 +97,6 @@ class GUI(Tk):
         self._turn_signal_sym.draw()
         self._speed_limit_sym.draw()
         self._evaluate_box.draw()
-        #if self._thumbs:
-        #    self._thumbs_up_sym.draw()
-        #else:
-        #    self._thumbs_down_sym.draw()
         self.after(20, self._update_symbols)
 
 if __name__ == '__main__':
