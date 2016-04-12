@@ -13,13 +13,20 @@ class Geometry(threading.Thread):
     _v = None
     _a = None
     _marker = None
+    _time = None
 
     _frequency = 10
     _inter_pos = None
+    _fix_a = 0
 
     def __init__(self):
         super(Geometry, self).__init__()
-        self._time_mem = (None, None)
+        self._last_time = None
+        self._last_stamp = None
+        self._step_size = 1
+        self._p0 = None
+        self._p1 = None
+        self._dir = None
         self.start()
 
     def pos():
@@ -53,19 +60,31 @@ class Geometry(threading.Thread):
             p0, p1, p2 = ((a['value'], b['value']) for a,b in zip(pos_lats, pos_lngs))
             t0, t1, t2= (pos_lats[i]['timestamp'] for i in range(3))
 
+            Geometry._time = t2
             Geometry._pos = p2
             Geometry._r = Geometry._make_r(p1, p2)
             Geometry._v = Geometry._r / (t2 - t1)
             Geometry._a = (Geometry._v - Geometry._make_r(p0, p1) / (t1-t0)) / ((t2+t1)/2 - (t1+t0)/2)
 
-            if self._time_mem[0] != pos_lngs[-1]['timestamp']:
-                self._time_mem = (pos_lngs[-1]['timestamp'], time.time())
+            if self._last_stamp != t2:
+                if self._last_time is None:
+                    self._last_time = time.time()
+                alph = 0.7
+                self.step_size = alph*self._step_size + (1-alph)*(time.time() - self._last_time)
 
-            dt = time.time() - self._time_mem[1]
-            if Geometry._a is not None:
-                #Geometry._inter_pos = list(np.array(p2) + Geometry._r_to_coords(dt*Geometry._v + 0.5*dt**2*Geometry._a))
-                p0, p1, p2 = (np.array(p) for p in (p0, p1, p2))
-                Geometry._inter_pos = list(p2 + (p2-p1)/(t2-t1)*dt + 0.5* ((p2-p1)/(t2-t1) - (p1-p0)/(t1-t0)) / ((t2+t1)/2 - (t1+t0)/2)*dt**2)
+                if Geometry._inter_pos is None:
+                    Geometry._inter_pos = p2
+
+                #Stabilize
+                self._dir = 0.3 * (np.array(p2) - Geometry._inter_pos) + 0.7 *(self._dir if self._dir is not None else np.array(p2)-Geometry._inter_pos)
+
+                self._last_stamp = t2
+                self._last_update_time = time.time()
+                self._last_time = time.time()
+
+            k = (time.time() - self._last_update_time) / self._step_size
+            self._last_update_time = time.time()
+            Geometry._inter_pos = list(self._dir * k + Geometry._inter_pos)
 
             Geometry._build_marker()
 
@@ -83,20 +102,21 @@ class Geometry(threading.Thread):
         r = np.append(Geometry._r, 0)  # copy
 
         center = np.array([0.5, 0.5, 1])
-        if r is None or np.linalg.norm(r) == 0:
-            Geometry._marker = np.transpose([center + 0.013*np.array([e1, e2*e1, 0])
-                for e1 in [-1, 1] for e2 in [-1, 1]])
-        else:
-            orth = np.cross(r, np.array([0, 0, 1]))
+        if (Geometry._marker is None and (r is None or np.linalg.norm(r) == 0)):
+            r = np.array([0., 1., 0.])
+        elif (r is None or np.linalg.norm(r) == 0):
+            return
 
-            r[1] *= -1  # y-direction reversed on screen
-            orth[1] *= -1
-            orth[2] = 0
+        orth = np.cross(r, np.array([0, 0, 1]))
 
-            r *= 0.020 / np.linalg.norm(r)  # normalize length
-            orth *= 0.013 / np.linalg.norm(orth)
+        r[1] *= -1  # y-direction reversed on screen
+        orth[1] *= -1
+        orth[2] = 0
 
-            Geometry._marker = np.transpose([
-                center - r - orth,
-                center + r,
-                center - r + orth])
+        r *= 0.020 / np.linalg.norm(r)  # normalize length
+        orth *= 0.013 / np.linalg.norm(orth)
+
+        Geometry._marker = np.transpose([
+            center - r - orth,
+            center + r,
+            center - r + orth])
