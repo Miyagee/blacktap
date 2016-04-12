@@ -33,7 +33,7 @@ class Main:
         self._last_turn_forget = None
         self._turn_analyzer = TurnSignalAnalyzer(self._forgot_signals_event)
         self._speeding_analyzer = SpeedingAnalyzer(self._speeding_event)
-        self._green = Green(Queue(),1)
+        self._green = Green(1)
 
         t = threading.Thread(target=self._mainloop)
         t.daemon = True
