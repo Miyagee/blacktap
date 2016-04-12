@@ -16,8 +16,7 @@ from queue import Queue
 class Main:
     def __init__(self):
         self._socket_address = 'data_stream.sock'
-        self._stream = FileStream("../../gen_data/downtown-east2_turn_sigs.json",
-                self._socket_address)
+        self._stream = FileStream("../../gen_data/downtown-east2_only_turn_sigs_speed_lims.json", self._socket_address)
         self._receiver = Receiver(self._socket_address)
         self._geo_listen = Geometry()
         self._frequency = 15
@@ -78,7 +77,6 @@ class Main:
                 self._speed_time = time.time()
             elif self._speed_time is not None and time.time()-self._speed_time > 2:
                 self._gui._speed_limit_sym.set_vibrate(0)
-
 
     def _sender(self):
         while True:

@@ -2,6 +2,7 @@ from tkinter import *
 from maps import Maps
 from PIL import Image, ImageTk, ImageDraw, ImageFont
 from vibratingbox import VibratingBox
+from evaluatebox import EvaluateBox
 import numpy as np
 import time
 
@@ -21,10 +22,7 @@ class GUI(Tk):
                 Image.open("resources/speed_limit_symbol.jpg"), self._canvas)
         self._turn_signal_sym = VibratingBox((100, 175),
                 Image.open("resources/turn_signal_symbol.jpg"), self._canvas)
-        self._thumbs_down_sym = VibratingBox((450, 175),
-                Image.open("resources/thumbs_down_symbol.jpg"), self._canvas)
-        self._thumbs_up_sym = VibratingBox((450, 175),
-                Image.open("resources/thumbs_up_symbol.jpg"), self._canvas)
+        self._evaluate_box = EvaluateBox((450, 175), self._canvas)
         self._marker = None
         self._marker_id = None
 
@@ -45,6 +43,7 @@ class GUI(Tk):
 
         self._update_map()
         self._update_symbols()
+
 
     def set_coords(self, lat, lng):
         self._coords = (lat, lng)
@@ -97,10 +96,7 @@ class GUI(Tk):
     def _update_symbols(self):
         self._turn_signal_sym.draw()
         self._speed_limit_sym.draw()
-        if self._thumbs:
-            self._thumbs_up_sym.draw()
-        else:
-            self._thumbs_down_sym.draw()
+        self._evaluate_box.draw()
         self.after(20, self._update_symbols)
 
 if __name__ == '__main__':
