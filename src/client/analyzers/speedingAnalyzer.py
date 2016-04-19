@@ -62,7 +62,7 @@ class SpeedingAnalyzer(threading.Thread):
         #    'speed_limit' : self._event.speed_limit })
 
         Distributor.analyzes.put( {
-            'type' : 'speeding',
+            'name' : 'speeding',
             'value' : True,
             'timestamp' : Geometry._time } )
 
