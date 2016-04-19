@@ -35,10 +35,9 @@ class Green(threading.Thread):
                     self.lastGearEvaluate = ('down', timestamp)
             else:
                 if 'none' != self.lastGearEvaluate[0]:
-                    #In this case we are going from a state where we should gear up/down to a state where the current gear is good.
-                    print({'name':'gear_change_suggestion', 'direction':self.lastGearEvaluate[0], 'timestamp':self.lastGearEvaluate[1], 'end_time':timestamp})
-                    self.queue.put({'name':'gear_change_suggestion', 'direction':self.lastGearEvaluate[0], 'timestamp':self.lastGearEvaluate[1], 'end_time':timestamp})
                     self.lastGearEvaluate = ('none', timestamp)
+            if self.lastGearEvaluate[0] != 'none':
+                self.queue.put({'name':'gear_change_suggestion', 'value':self.lastGearEvaluate[0], 'timestamp':timestamp})
 
     def run(self):
         sleep(5*self.sleep_duration)
