@@ -33,6 +33,7 @@ class Main:
         self._speeding_event = threading.Event()
         self._aggressive_event = threading.Event()
         self._green_event = threading.Event()
+        self._green_event.direction = None
         self._speeding_event.speed_limit = None
         self._last_turn_forget = None
         self._turn_analyzer = TurnSignalAnalyzer(self._forgot_signals_event)
@@ -93,7 +94,10 @@ class Main:
                 elif self._green_event.direction == 'down':
                     self._gui._evaluate_box.set_value(EvaluateBox.GEAR_DOWN)
                 self._evaluatebox_last_time = time.time()
-                self._aggressive_event.clear()
+                self._green_event.clear()
+            elif self._green_event.direction == 'none':
+                self._gui._evaluate_box.set_value(EvaluateBox.GOOD)
+
 
 
             if self._speed_limit != self._speeding_event.speed_limit:
