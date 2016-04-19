@@ -20,7 +20,7 @@ class EvaluateBox:
         self._gear_down = ImageTk.PhotoImage(Image.open("resources/gear_down.jpg"))
 
 
-        self._value = EvaluateBox.GEAR_UP
+        self._value = EvaluateBox.GOOD
         self._position = position
 
         self._symbol_widget = self._canvas.create_image(position, image=self._good)

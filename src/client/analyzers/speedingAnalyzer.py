@@ -2,6 +2,7 @@ import threading
 import time
 from sensors import Sensors
 from distributor import Distributor
+from geometry import Geometry
 
 class SpeedingAnalyzer(threading.Thread):
     def __init__(self, event):
@@ -42,22 +43,28 @@ class SpeedingAnalyzer(threading.Thread):
                         self._start_time = pos[0]['timestamp']
                     self._velocities.append(vehic_speed)
                     self._points.append(list(map(lambda obj : obj['value'], pos)))
-
-                elif vehic_speed and self._start_time: # No longing speeding, has things to send
-                    self._end_time = pos[0]['timestamp']
                     self._send()
+
+                #elif vehic_speed and self._start_time: # No longing speeding, has things to send
+                #    self._end_time = pos[0]['timestamp']
+                #    self._send()
 
                 self._event.speed_limit = speed_lim
 
     def _send(self):
+        #Distributor.analyzes.put( {
+        #    'type' : 'speeding',
+        #    'points' : self._points,  #list of 2-tuples
+        #    'start_time' : self._start_time,
+        #    'end_time' : self._end_time,
+        #    'max_speed' : max(self._velocities),
+        #    'avg_speed' : sum(self._velocities) / len(self._velocities),
+        #    'speed_limit' : self._event.speed_limit })
+
         Distributor.analyzes.put( {
-            'type' : 'speeding',
-            'points' : self._points,  #list of 2-tuples
-            'start_time' : self._start_time,
-            'end_time' : self._end_time,
-            'max_speed' : max(self._velocities),
-            'avg_speed' : sum(self._velocities) / len(self._velocities),
-            'speed_limit' : self._event.speed_limit })
+            'name' : 'speeding',
+            'value' : True,
+            'timestamp' : Geometry._time } )
 
         self._start_time = None
         self._end_time = None
