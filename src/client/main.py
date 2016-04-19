@@ -16,7 +16,7 @@ import time
 from queue import Queue
 
 class Main:
-    def __init__(self):
+    def __init__(self, UPLOAD = True, USE_GUI = True):
         self._socket_address = 'data_stream.sock'
         self._stream = FileStream("../../gen_data/downtown-east2_only_turn_sigs_speed_lims.json", self._socket_address)
         self._receiver = Receiver(self._socket_address)
@@ -41,19 +41,23 @@ class Main:
         self._aggressive_analyze = AggressiveAnalyzer(self._aggressive_event)
         self._evaluatebox_last_time = None
 
-        self._gui = GUI()
+        if USE_GUI:
+            self._gui = GUI()
 
-        t = threading.Thread(target=self._mainloop)
-        t.daemon = True
-        t.start()
+            t = threading.Thread(target=self._mainloop)
+            t.daemon = True
+            t.start()
 
+        if UPLOAD:
+            self._distributor = Distributor('upload_stream.sock', self._send_frequency)
+            s = threading.Thread(target=self._sender)
+            s.daemon = True
+            s.start()
 
-        #self._distributor = Distributor('upload_stream.sock', self._send_frequency)
-        #s = threading.Thread(target=self._sender)
-        #s.daemon = True
-        #s.start()
-
-        self._gui.mainloop()
+        if USE_GUI:
+            self._gui.mainloop()
+        else:
+            self._stream.join() # keep main from exiting
 
     def _mainloop(self):
         while True:
@@ -108,4 +112,4 @@ class Main:
             sleep(1 / self._send_frequency)
 
 if __name__ == '__main__':
-    m = Main()
+    m = Main(UPLOAD = False)
