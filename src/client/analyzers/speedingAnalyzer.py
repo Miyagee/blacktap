@@ -2,6 +2,7 @@ import threading
 import time
 from sensors import Sensors
 from distributor import Distributor
+from geometry import Geometry
 
 class SpeedingAnalyzer(threading.Thread):
     def __init__(self, event):

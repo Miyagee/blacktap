@@ -10,9 +10,9 @@ import threading
 class Green(threading.Thread):
     """This class is used to calculate current fuel usage, if the user is driving green and some other stuff."""
 
-    def __init__(self, sleep_duration):
+    def __init__(self, sleep_duration, event):
         print('Initializing')
-        self.event = threading.Event()
+        self.event = event
         threading.Thread.__init__(self, target=None, args=None)
         self.queue = Distributor.analyzes
         self.sleep_duration = sleep_duration
