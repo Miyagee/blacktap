@@ -36,8 +36,8 @@ class Green(threading.Thread):
             else:
                 if 'none' != self.lastGearEvaluate[0]:
                     #In this case we are going from a state where we should gear up/down to a state where the current gear is good.
-                    print({'type':'gear_change_suggestion', 'direction':self.lastGearEvaluate[0], 'start_time':self.lastGearEvaluate[1], 'end_time':timestamp})
-                    self.queue.put({'type':'gear_change_suggestion', 'direction':self.lastGearEvaluate[0], 'start_time':self.lastGearEvaluate[1], 'end_time':timestamp})
+                    print({'name':'gear_change_suggestion', 'direction':self.lastGearEvaluate[0], 'timestamp':self.lastGearEvaluate[1], 'end_time':timestamp})
+                    self.queue.put({'name':'gear_change_suggestion', 'direction':self.lastGearEvaluate[0], 'timestamp':self.lastGearEvaluate[1], 'end_time':timestamp})
                     self.lastGearEvaluate = ('none', timestamp)
 
     def run(self):
@@ -68,7 +68,7 @@ class Green(threading.Thread):
                 fuel_usage_per_km = fuel_diff / distance_diff
             else:
                 fuel_usage_per_km = 0
-            self.queue.put({'type':'fuel_usage_per_10km', 'value':fuel_usage_per_km*10, 'start_time':fuel_data[-1].get('timestamp')})
+            self.queue.put({'name':'fuel_usage_per_10km', 'value':fuel_usage_per_km*10, 'timestamp':fuel_data[-1].get('timestamp')})
 
 
 if __name__ == '__main__':

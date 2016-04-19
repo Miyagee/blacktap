@@ -34,7 +34,7 @@ class Distributor(object):
                 ('longitude', self._last),
                 ('odometer', self._last),
                 ('parking_brake_status', self._any),
-                ('speed_limit', self._last),
+                #('speed_limit', self._last),
                 ('transmission_gear_position', self._last),
                 ('turn_signal', self._any),
                 ('vehicle_speed', self._average),
@@ -43,8 +43,8 @@ class Distributor(object):
     def send(self):
         payload = [e[1](e[0]) for e in self._datas]
         payload = [e for e in payload if e is not None]
-        while not Distributor.analyzes.empty():
-            payload.append(Distributor.analyzes.get())
+        #while not Distributor.analyzes.empty():
+        #    payload.append(Distributor.analyzes.get())
 
         print("Sending payload")
         self._socket.send(json.dumps(payload).encode("utf-8"))
