@@ -37,23 +37,38 @@ class AggressiveAnalyzer(threading.Thread):
         """
         while True:
             time.sleep(1.0 / self._frequency)
-            acc_ped_pos, brake_pedal_status, engine_speed = [], [], []
+            acc_ped_pos = []
+            vehicle_speed = []
             Sensors.get_last(lambda obj: obj['name'] == 'accelerator_pedal_position', acc_ped_pos)
-            acc_ped_pos = acc_ped_pos[0]['value'] if acc_ped_pos else None
-            if acc_ped_pos:
-                print("Accelerator pedal status {}".format(acc_ped_pos))
-                if self.is_driving_aggressively(acc_ped_pos):
+            Sensors.get_last(lambda obj: obj['name'] == 'vehicle_speed', vehicle_speed)
+
+            acc_ped_pos = acc_ped_pos[0] if acc_ped_pos else None
+            vehicle_speed = vehicle_speed[0] if vehicle_speed else None
+            if acc_ped_pos is not None:
+                timestamp = acc_ped_pos["timestamp"]
+                ped_pos = acc_ped_pos['value']
+                speed = vehicle_speed['value']
+                print("Accelerator pedal status {}".format(ped_pos))
+                print("Acceleration: {}".format(self.get_acceleration()))
+                if self.is_driving_aggressively(ped_pos):
+                    print("AGGRESSIVE!")
                     self._event.set()
 
                     if self._start_time is None:
-                        self._start_time = pos[0]['timestamp']
+                        self._start_time = acc_ped_pos['timestamp']
                 elif self._start_time:
-                    self._end_time = pos[0]['timestamp']
+                    self._end_time = acc_ped_pos['timestamp']
                     # self._send()
+                self._points.append((timestamp, ped_pos, speed))
 
     def is_driving_aggressively(self, acc_ped_pos):
-        return acc_ped_pos > 25
+        return abs(self.get_acceleration()) > 1.0 or acc_ped_pos > 25
 
-
-
-
+    def get_acceleration(self):
+        if len(self._points) < 2:
+            return 0
+        num_points = min(5, len(self._points))
+        points = self._points[-num_points:]
+        timestamps, acc_ped, speed = zip(*points)
+        acceleration = (speed[-1] - speed[0]) / 3.6 / (float(timestamps[-1]) - float(timestamps[0]))
+        return acceleration
