@@ -44,7 +44,6 @@ class Runner(object):
         query_db = QueryDB(db)
         query_db.find_trip_id()
 
-
         print 'Running main loop'
         while True:
 

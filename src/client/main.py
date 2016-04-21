@@ -118,4 +118,4 @@ class Main:
             sleep(1 / self._send_frequency)
 
 if __name__ == '__main__':
-    m = Main(UPLOAD = False)
+    m = Main(UPLOAD = True)
