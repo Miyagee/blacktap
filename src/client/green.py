@@ -27,15 +27,18 @@ class Green(threading.Thread):
         if vehicle_speed > 1:
             if engine_speed > 2000:
                 self.event.direction = 'up'
+                self.event.set()
                 if 'up' != self.lastGearEvaluate[0]:
                     self.lastGearEvaluate = ('up', timestamp)
             elif engine_speed < 1000 and current_gear != 'first':
                 self.event.direction = 'down'
+                self.event.set()
                 if 'down' != self.lastGearEvaluate[0]:
                     self.lastGearEvaluate = ('down', timestamp)
             else:
                 if 'none' != self.lastGearEvaluate[0]:
                     self.lastGearEvaluate = ('none', timestamp)
+                self.event.direction = 'none'
             if self.lastGearEvaluate[0] != 'none':
                 self.queue.put({'name':'gear_change_suggestion', 'value':self.lastGearEvaluate[0], 'timestamp':timestamp})
 
