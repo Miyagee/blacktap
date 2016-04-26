@@ -68,13 +68,16 @@ class AggressiveAnalyzer(threading.Thread):
         num_points = min(5, len(self._points))
         points = self._points[-num_points:]
         timestamps, acc_ped, speed = zip(*points)
-        acceleration = (speed[-1] - speed[0]) / 3.6 / (float(timestamps[-1]) - float(timestamps[0]))
+        try:
+            acceleration = (speed[-1] - speed[0]) / 3.6 / (float(timestamps[-1]) - float(timestamps[0]))
+        except ZeroDivisionError:
+            acceleration = 0
         return acceleration
 
     def _send(self):
         Distributor.analyzes.put({
             'name': 'aggressive',
-            'value': True,
+            'value': 1,
             'timestamp': Geometry._time
         })
 

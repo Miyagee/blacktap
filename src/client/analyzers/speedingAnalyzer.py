@@ -63,7 +63,7 @@ class SpeedingAnalyzer(threading.Thread):
 
         Distributor.analyzes.put( {
             'name' : 'speeding',
-            'value' : True,
+            'value' : 1,
             'timestamp' : Geometry._time } )
 
         #self._start_time = None
