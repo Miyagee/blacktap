@@ -32,13 +32,15 @@ class QueryDB:
         d['timestamp'] = timestamp
 
         #Updating trip id
-        self.tmp_set = self.tmp_set | set(d.keys()) if "tmp_set" in dir(self) else set()
+
+        invalids = [key for key in d if key not in self._lega_fields]
+        if invalids:
+            raise Exception("KeyNotADatabaseValueError: " + ", ".join(invalids))
 
         query = "INSERT INTO skyclouds_blacktap.data (bil_idBil, tripId"
-        query += ', '.join([""] + [key for key in d if key in self._legal_fields])
+        query += ', '.join([""] + list(d.keys()))
         query += ") VALUES ( '2', %s" % self.trip_id
-        query += ', '.join([""]+["'%s'" % v for k,v in d.items() if k in self._legal_fields])
+        query += ', '.join([""]+["'%s'" % v for v in d.values()])
         query += ");"
 
-        print query
         self._db.commit()
