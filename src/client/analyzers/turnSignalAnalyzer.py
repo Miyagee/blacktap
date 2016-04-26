@@ -49,5 +49,5 @@ class TurnSignalAnalyzer(threading.Thread):
                 elif address != self._street_address:
                     self._street_address = address
                     self._event.set()
-                    Distributor.analyzes.put( {'name' : 'forgot_turn_signals', 'value' : True,
+                    Distributor.analyzes.put( {'name' : 'forgot_signals', 'value' : True,
                         'timestamp' : Geometry._time} )
