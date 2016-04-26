@@ -40,7 +40,7 @@ class Green(threading.Thread):
                     self.lastGearEvaluate = ('none', timestamp)
                 self.event.direction = 'none'
             if self.lastGearEvaluate[0] != 'none':
-                self.queue.put({'name':'gear_change_suggestion', 'value':self.lastGearEvaluate[0], 'timestamp':timestamp})
+                self.queue.put({'name':'gear_suggestion', 'value':self.lastGearEvaluate[0], 'timestamp':timestamp})
 
     def run(self):
         sleep(5*self.sleep_duration)
