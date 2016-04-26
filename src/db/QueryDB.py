@@ -45,4 +45,5 @@ class QueryDB:
         query += ', '.join([""]+["'%s'" % v for v in d.values()])
         query += ");"
 
+        self.cursor.execute(query)
         self._db.commit()
