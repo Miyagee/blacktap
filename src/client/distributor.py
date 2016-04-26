@@ -49,7 +49,7 @@ class Distributor(object):
         self._socket.send(json.dumps(payload).encode("utf-8"))
 
     def _get_analyzes(self):
-        li =[]
+        li = []
         lookup = {}
 
         while not Distributor.analyzes.empty():

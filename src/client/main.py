@@ -18,7 +18,7 @@ from queue import Queue
 class Main:
     def __init__(self, UPLOAD = True, USE_GUI = True):
         self._socket_address = 'data_stream.sock'
-        self._stream = FileStream("../../data/aggressive-driving.json", self._socket_address)
+        self._stream = FileStream("../../gen_data/downtown-east2_only_turn_sigs_speed_lims.json", self._socket_address)
         self._receiver = Receiver(self._socket_address)
         self._geo_listen = Geometry()
         self._frequency = 15
@@ -87,6 +87,7 @@ class Main:
                 self._gui._evaluate_box.set_value(EvaluateBox.BAD)
                 self._evaluatebox_last_time = time.time()
                 self._aggressive_event.clear()
+
             if self._evaluatebox_last_time is not None and time.time() - self._evaluatebox_last_time > 3:
                 self._gui._evaluate_box.set_value(EvaluateBox.GOOD)
 
@@ -99,8 +100,6 @@ class Main:
                 self._green_event.clear()
             elif self._green_event.direction == 'none':
                 self._gui._evaluate_box.set_value(EvaluateBox.GOOD)
-
-
 
             if self._speed_limit != self._speeding_event.speed_limit:
                 self._speed_limit = self._speeding_event.speed_limit
