@@ -70,7 +70,7 @@ class Green(threading.Thread):
                 fuel_usage_per_km = fuel_diff / distance_diff
             else:
                 fuel_usage_per_km = 0
-            self.queue.put({'name':'fuel_usage_per_10km', 'value':fuel_usage_per_km*10, 'timestamp':fuel_data[-1].get('timestamp')})
+            self.queue.put({'name':'fuel_usage10', 'value':fuel_usage_per_km*10, 'timestamp':fuel_data[-1].get('timestamp')})
 
 
 if __name__ == '__main__':
