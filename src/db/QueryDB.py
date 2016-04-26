@@ -35,7 +35,7 @@ class QueryDB:
 
         #Updating trip id
 
-        invalids = [key for key in d if key not in self._lega_fields]
+        invalids = [key for key in d if key not in self._legal_fields]
         if invalids:
             raise Exception("KeyNotADatabaseValueError: " + ", ".join(invalids))
 
