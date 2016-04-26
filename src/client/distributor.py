@@ -56,11 +56,9 @@ class Distributor(object):
             e = Distributor.analyzes.get()
             if e['name'] in lookup:
                 li[lookup[e['name']]] = max(e, li[lookup[e['name']]], key = lambda e : e['timestamp'])
-                print("DUP")
             else:
                 lookup[e['name']] = len(li)
                 li.append(e)
-            print(li)
         return li
 
     def _average(self, name):
