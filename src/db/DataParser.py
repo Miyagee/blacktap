@@ -12,6 +12,7 @@ class DataParser():
         result = {}
         for d in list_of_dicts:
             result[d.get('name')] = d.get('value')
-        result['timestamp'] = list_of_dicts[-1].get('timestamp')
+        #result['timestamp'] = list_of_dicts[-1].get('timestamp')
+        result['timestamp'] = max(e['timestamp'] for e in list_of_dicts)
 
         return result
