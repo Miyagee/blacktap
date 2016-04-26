@@ -67,7 +67,7 @@ class Distributor(object):
                 self._period)
         if data:
             value = sum(elem['value'] for elem in data) / len(data)
-            timestamp = sum(elem['timestamp'] for elem in data) / len(data)
+            timestamp = max(elem['timestamp'] for elem in data)
             return self._make(name, value, timestamp)
 
     def _last(self, name):
