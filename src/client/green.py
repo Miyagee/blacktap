@@ -16,7 +16,7 @@ class Green(threading.Thread):
         threading.Thread.__init__(self, target=None, args=None)
         self.queue = Distributor.analyzes
         self.sleep_duration = sleep_duration
-        self.lastGearEvaluate = ('none', 'asd')
+        self.lastGearEvaluate = (None, 'asd')
 
         # Start our thread!
         print('Start!')
@@ -28,18 +28,18 @@ class Green(threading.Thread):
             if engine_speed > 2000:
                 self.event.direction = 'up'
                 self.event.set()
-                if 'up' != self.lastGearEvaluate[0]:
-                    self.lastGearEvaluate = ('up', timestamp)
+                if 1 != self.lastGearEvaluate[0]:
+                    self.lastGearEvaluate = (1, timestamp)
             elif engine_speed < 1000 and current_gear != 'first':
                 self.event.direction = 'down'
                 self.event.set()
-                if 'down' != self.lastGearEvaluate[0]:
-                    self.lastGearEvaluate = ('down', timestamp)
+                if -1 != self.lastGearEvaluate[0]:
+                    self.lastGearEvaluate = (-1, timestamp)
             else:
-                if 'none' != self.lastGearEvaluate[0]:
-                    self.lastGearEvaluate = ('none', timestamp)
+                if self.lastGearEvaluate[0] is not None:
+                    self.lastGearEvaluate = (None, timestamp)
                 self.event.direction = 'none'
-            if self.lastGearEvaluate[0] != 'none':
+            if self.lastGearEvaluate[0] is not None:
                 self.queue.put({'name':'gear_suggestion', 'value':self.lastGearEvaluate[0], 'timestamp':timestamp})
 
     def run(self):
