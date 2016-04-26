@@ -2,6 +2,7 @@ import threading
 import time
 from sensors import Sensors
 from distributor import Distributor
+from geometry import Geometry
 
 
 class AggressiveAnalyzer(threading.Thread):
@@ -11,7 +12,6 @@ class AggressiveAnalyzer(threading.Thread):
         self._event = event
         self._frequency = 2  # times per second
         self._start_time = None
-        self._end_time = None
         self._points = []
         self.start()
 
@@ -53,13 +53,11 @@ class AggressiveAnalyzer(threading.Thread):
                 if self.is_driving_aggressively(ped_pos):
                     print("AGGRESSIVE!")
                     self._event.set()
-
                     if self._start_time is None:
                         self._start_time = acc_ped_pos['timestamp']
-                elif self._start_time:
-                    self._end_time = acc_ped_pos['timestamp']
-                    # self._send()
+                    self._send()
                 self._points.append((timestamp, ped_pos, speed))
+
 
     def is_driving_aggressively(self, acc_ped_pos):
         return abs(self.get_acceleration()) > 1.0 or acc_ped_pos > 25
@@ -72,3 +70,13 @@ class AggressiveAnalyzer(threading.Thread):
         timestamps, acc_ped, speed = zip(*points)
         acceleration = (speed[-1] - speed[0]) / 3.6 / (float(timestamps[-1]) - float(timestamps[0]))
         return acceleration
+
+    def _send(self):
+        Distributor.analyzes.put({
+            'name': 'aggressive',
+            'value': True,
+            'timestamp': Geometry._time
+        })
+
+        self._start_time = None
+        self._points = []
