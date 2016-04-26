@@ -12,7 +12,9 @@ class QueryDB:
         self.trip_id = 0
         self._db = db
         self._last_time = None
-        self._legal_fields = {u'accelerator_pedal_position', 'timestamp', u'transmission_gear_position', u'fuel_level', u'engine_speed', u'fuel_consumed_since_restart', u'longitude', u'odometer', u'vehicle_speed', u'brake_pedal_status', u'latitude'}
+        self._legal_fields = {u'accelerator_pedal_position', 'timestamp', u'transmission_gear_position', u'fuel_level', u'engine_speed', u'fuel_consumed_since_restart', u'longitude', u'odometer',
+                u'vehicle_speed', u'brake_pedal_status', u'latitude', u'speed_limit', u'turn_signals',
+                u'forgot_signals', u'speeding', u'aggressive', u'gear_suggestion', u'fuel_usage10'}
 
   #Finding the last trip id in database data table
     def find_trip_id(self):
