@@ -36,13 +36,13 @@ class SpeedingAnalyzer(threading.Thread):
                     self._event.set()
                     self._event.speeding_percentage = (vehic_speed - speed_lim) / speed_lim
 
-                    if self._velocities and self._event.speed_limit and speed_lim != self._event.speed_limit:
-                        self._send()
+                    #if self._velocities and self._event.speed_limit and speed_lim != self._event.speed_limit:
+                    #    self._send()
 
-                    if not self._start_time:
-                        self._start_time = pos[0]['timestamp']
-                    self._velocities.append(vehic_speed)
-                    self._points.append(list(map(lambda obj : obj['value'], pos)))
+                    #if not self._start_time:
+                    #    self._start_time = pos[0]['timestamp']
+                    #self._velocities.append(vehic_speed)
+                    #self._points.append(list(map(lambda obj : obj['value'], pos)))
                     self._send()
 
                 #elif vehic_speed and self._start_time: # No longing speeding, has things to send
@@ -66,10 +66,10 @@ class SpeedingAnalyzer(threading.Thread):
             'value' : True,
             'timestamp' : Geometry._time } )
 
-        self._start_time = None
-        self._end_time = None
-        self._velocities.clear()
-        self._points.clear()
+        #self._start_time = None
+        #self._end_time = None
+        #self._velocities.clear()
+        #self._points.clear()
 
     def is_speeding(self, velocity, limit):
         return velocity >= limit + 10

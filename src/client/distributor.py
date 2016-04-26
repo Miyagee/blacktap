@@ -43,11 +43,23 @@ class Distributor(object):
     def send(self):
         payload = [e[1](e[0]) for e in self._datas]
         payload = [e for e in payload if e is not None]
-        while not Distributor.analyzes.empty():
-            payload.append(Distributor.analyzes.get())
+        payload.extend(self._get_analyzes())
 
-        print("Sending payload")
+        print("Sending payload over socket")
         self._socket.send(json.dumps(payload).encode("utf-8"))
+
+    def _get_analyzes(self):
+        li = []
+        lookup = {}
+
+        while not Distributor.analyzes.empty():
+            e = Distributor.analyzes.get()
+            if e['name'] in lookup:
+                li[lookup[e['name']]] = max(e, li[lookup[e['name']]], key = lambda e : e['timestamp'])
+            else:
+                lookup[e['name']] = len(li)
+                li.append(e)
+        return li
 
     def _average(self, name):
         data = []

@@ -12,8 +12,6 @@ class DataParser():
         result = {}
         for d in list_of_dicts:
             result[d.get('name')] = d.get('value')
-            print(d)
         result['timestamp'] = list_of_dicts[-1].get('timestamp')
-        print(result)
 
         return result
