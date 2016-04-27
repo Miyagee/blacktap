@@ -104,7 +104,7 @@ class GUI(Tk):
         self._evaluate_box.draw()
         if not self._continue_running():
             self.destroy()
-            exit(1)
+            exit(0)
         self.after(20, self._update_symbols)
 
 if __name__ == '__main__':
