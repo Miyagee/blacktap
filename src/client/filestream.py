@@ -55,6 +55,7 @@ if __name__ == '__main__':
             f = FileStream(
                 "../../gen_data/downtown-east2_only_turn_sigs_speed_lims.json",
                 'data_stream.sock').join()
+            break
             #f = FileStream('downtown-east2.json', 'data_stream.sock').join()
             #f = FileStream('../data/aggressive-driving.json', 'data_stream.sock').join()
         except KeyboardInterrupt:
