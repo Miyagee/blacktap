@@ -6,6 +6,7 @@ from math import cos, pi
 import time
 import sys  # remove
 
+
 class Geometry(threading.Thread):
 
     _pos = None
@@ -50,33 +51,37 @@ class Geometry(threading.Thread):
 
             pos_lats = []
             pos_lngs = []
-            Sensors.get_data(lambda obj : obj['name'] == 'latitude',
-                    pos_lats, 3)
-            Sensors.get_data(lambda obj : obj['name'] == 'longitude',
-                    pos_lngs, 3)
+            Sensors.get_data(lambda obj: obj['name'] == 'latitude',
+                             pos_lats, 3)
+            Sensors.get_data(lambda obj: obj['name'] == 'longitude',
+                             pos_lngs, 3)
 
             if len(pos_lats) < 3 or len(pos_lngs) < 3:
                 continue
-            p0, p1, p2 = ((a['value'], b['value']) for a,b in zip(pos_lats, pos_lngs))
-            t0, t1, t2= (pos_lats[i]['timestamp'] for i in range(3))
+            p0, p1, p2 = ((a['value'], b['value'])
+                          for a, b in zip(pos_lats, pos_lngs))
+            t0, t1, t2 = (pos_lats[i]['timestamp'] for i in range(3))
 
             Geometry._time = t2
             Geometry._pos = p2
             Geometry._r = Geometry._make_r(p1, p2)
             Geometry._v = Geometry._r / (t2 - t1)
-            Geometry._a = (Geometry._v - Geometry._make_r(p0, p1) / (t1-t0)) / ((t2+t1)/2 - (t1+t0)/2)
+            Geometry._a = (Geometry._v - Geometry._make_r(p0, p1) /
+                           (t1 - t0)) / ((t2 + t1) / 2 - (t1 + t0) / 2)
 
             if self._last_stamp != t2:
                 if self._last_time is None:
                     self._last_time = time.time()
                 alph = 0.7
-                self.step_size = alph*self._step_size + (1-alph)*(time.time() - self._last_time)
+                self.step_size = alph * self._step_size + \
+                    (1 - alph) * (time.time() - self._last_time)
 
                 if Geometry._inter_pos is None:
                     Geometry._inter_pos = p2
 
-                #Stabilize
-                self._dir = 0.3 * (np.array(p2) - Geometry._inter_pos) + 0.7 *(self._dir if self._dir is not None else np.array(p2)-Geometry._inter_pos)
+                # Stabilize
+                self._dir = 0.3 * (np.array(p2) - Geometry._inter_pos) + 0.7 * (
+                    self._dir if self._dir is not None else np.array(p2) - Geometry._inter_pos)
 
                 self._last_stamp = t2
                 self._last_update_time = time.time()
@@ -92,11 +97,12 @@ class Geometry(threading.Thread):
         dlat = end[0] - start[0]
         dlng = end[1] - start[1]
 
-        return -np.array([dlng * 111111 * cos(end[0] / 360 * 2 * pi), dlat * 111111])
+        return -np.array([dlng * 111111 * cos(end[0] /
+                                              360 * 2 * pi), dlat * 111111])
 
     def _r_to_coords(r):
-        return -np.array([r[0] / 111111, r[1] / (111111 * cos(Geometry._pos[0] *
-            pi/180))][::-1])
+        return -np.array([r[0] / 111111, r[1] / (111111 *
+                                                 cos(Geometry._pos[0] * pi / 180))][::-1])
 
     def _build_marker():
         r = np.append(Geometry._r, 0)  # copy

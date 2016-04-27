@@ -15,7 +15,9 @@ import threading
 import time
 from queue import Queue
 
+
 class Main:
+
     def __init__(self, UPLOAD=True, USE_GUI=True, USE_FILESTREAM=False):
         self._socket_address = 'data_stream.sock'
         self._receiver = Receiver(self._socket_address)
@@ -23,7 +25,9 @@ class Main:
         self._frequency = 15
 
         if USE_FILESTREAM:
-            self._stream = FileStream("../../gen_data/downtown-east2_only_turn_sigs_speed_lims.json", self._socket_address)
+            self._stream = FileStream(
+                "../../gen_data/downtown-east2_only_turn_sigs_speed_lims.json",
+                self._socket_address)
 
         self._send_frequency = 1
         self._speed_limit = None
@@ -52,7 +56,8 @@ class Main:
             t.start()
 
         if UPLOAD:
-            self._distributor = Distributor('upload_stream.sock', self._send_frequency)
+            self._distributor = Distributor(
+                'upload_stream.sock', self._send_frequency)
             s = threading.Thread(target=self._sender)
             s.daemon = True
             s.start()
@@ -60,7 +65,7 @@ class Main:
         if USE_GUI:
             self._gui.mainloop()
         else:
-            self._stream.join() # keep main from exiting
+            self._stream.join()  # keep main from exiting
 
     def _mainloop(self):
         while True:
@@ -85,7 +90,8 @@ class Main:
             if self._last_turn_forget is not None and time.time() - self._last_turn_forget > 3:
                 self._gui._turn_signal_sym.set_vibrate(0)
 
-            if self._evaluatebox_last_time is None or time.time() - self._evaluatebox_last_time > 3:
+            if self._evaluatebox_last_time is None or time.time() - \
+                    self._evaluatebox_last_time > 3:
                 if self._aggressive_event.is_set():
                     self._gui._evaluate_box.set_value(EvaluateBox.BAD)
                     self._evaluatebox_last_time = time.time()
@@ -94,7 +100,8 @@ class Main:
                     if self._green_event.direction == 'up':
                         self._gui._evaluate_box.set_value(EvaluateBox.GEAR_UP)
                     elif self._green_event.direction == 'down':
-                        self._gui._evaluate_box.set_value(EvaluateBox.GEAR_DOWN)
+                        self._gui._evaluate_box.set_value(
+                            EvaluateBox.GEAR_DOWN)
                     self._evaluatebox_last_time = time.time()
                     self._green_event.clear()
                 else:
@@ -104,10 +111,11 @@ class Main:
                 self._speed_limit = self._speeding_event.speed_limit
                 self._gui.set_speed_limit(self._speed_limit)
             if self._speeding_event.is_set():
-                self._gui._speed_limit_sym.set_vibrate(10 * self._speeding_event.speeding_percentage)
+                self._gui._speed_limit_sym.set_vibrate(
+                    10 * self._speeding_event.speeding_percentage)
                 self._speeding_event.clear()
                 self._speed_time = time.time()
-            elif self._speed_time is not None and time.time()-self._speed_time > 2:
+            elif self._speed_time is not None and time.time() - self._speed_time > 2:
                 self._gui._speed_limit_sym.set_vibrate(0)
 
     def _sender(self):
@@ -116,4 +124,4 @@ class Main:
             sleep(1 / self._send_frequency)
 
 if __name__ == '__main__':
-    m = Main(UPLOAD = False, USE_GUI = True)
+    m = Main(UPLOAD=False, USE_GUI=True)

@@ -6,6 +6,7 @@ from geometry import Geometry
 
 
 class AggressiveAnalyzer(threading.Thread):
+
     def __init__(self, event):
         super(AggressiveAnalyzer, self).__init__()
 
@@ -39,8 +40,12 @@ class AggressiveAnalyzer(threading.Thread):
             time.sleep(1.0 / self._frequency)
             acc_ped_pos = []
             vehicle_speed = []
-            Sensors.get_last(lambda obj: obj['name'] == 'accelerator_pedal_position', acc_ped_pos)
-            Sensors.get_last(lambda obj: obj['name'] == 'vehicle_speed', vehicle_speed)
+            Sensors.get_last(
+                lambda obj: obj['name'] == 'accelerator_pedal_position',
+                acc_ped_pos)
+            Sensors.get_last(
+                lambda obj: obj['name'] == 'vehicle_speed',
+                vehicle_speed)
 
             acc_ped_pos = acc_ped_pos[0] if acc_ped_pos else None
             vehicle_speed = vehicle_speed[0] if vehicle_speed else None
@@ -58,7 +63,6 @@ class AggressiveAnalyzer(threading.Thread):
                     self._send()
                 self._points.append((timestamp, ped_pos, speed))
 
-
     def is_driving_aggressively(self, acc_ped_pos):
         return abs(self.get_acceleration()) > 1.0 or acc_ped_pos > 25
 
@@ -69,7 +73,8 @@ class AggressiveAnalyzer(threading.Thread):
         points = self._points[-num_points:]
         timestamps, acc_ped, speed = zip(*points)
         try:
-            acceleration = (speed[-1] - speed[0]) / 3.6 / (float(timestamps[-1]) - float(timestamps[0]))
+            acceleration = (speed[-1] - speed[0]) / 3.6 / \
+                (float(timestamps[-1]) - float(timestamps[0]))
         except ZeroDivisionError:
             acceleration = 0
         return acceleration

@@ -2,6 +2,7 @@ from tkinter import Tk, Canvas
 from PIL import Image, ImageTk
 import time
 
+
 class VibratingBox:
 
     def __init__(self, position, image, canvas):
@@ -22,7 +23,7 @@ class VibratingBox:
         if -self._dy + self._vy**2 < 0.01:
             self._time = time.time()
             self._dy = 0
-            self._vy = -self._vibrate_value*30
+            self._vy = -self._vibrate_value * 30
 
         if self._time is None:
             self._time = time.time()
@@ -40,10 +41,11 @@ class VibratingBox:
                 self._dy = 0
 
         if self._id is None:
-            self._id = self._canvas.create_image( (self._position[0], self._position[1] + \
-                self._dy), image=self._image_tk)
+            self._id = self._canvas.create_image(
+                (self._position[0], self._position[1] + self._dy), image=self._image_tk)
         else:
-            self._canvas.move(self._id, 0, self._dy - self._old_dy)  # takes dx, dy arguments
+            self._canvas.move(self._id, 0, self._dy -
+                              self._old_dy)  # takes dx, dy arguments
             self._old_dy = self._dy
 
     def set_vibrate(self, value):

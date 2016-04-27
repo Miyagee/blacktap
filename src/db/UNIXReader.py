@@ -5,13 +5,14 @@
 import socket
 import os
 
+
 class UNIXReader(object):
 
-    #Empty constructor
+    # Empty constructor
     def __init__(self, server_adress):
         self.server_adress = server_adress
 
-    #Creating and setting up socket and connection
+    # Creating and setting up socket and connection
     def connect(self):
         self.sock = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)
 
@@ -22,7 +23,7 @@ class UNIXReader(object):
         self.connection, self.client_address = self.sock.accept()
         print('Connected to socket!')
 
-    #Receive socket from connection
+    # Receive socket from connection
     def revc_socket(self):
         self.data = self.connection.recv(250000).decode("utf-8")
         return self.data

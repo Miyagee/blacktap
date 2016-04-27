@@ -6,6 +6,7 @@ import time
 import googlemaps
 import logging
 
+
 class TurnSignalAnalyzer(threading.Thread):
 
     def __init__(self, event):
@@ -13,7 +14,8 @@ class TurnSignalAnalyzer(threading.Thread):
 
         self._event = event
         self._frequency = 1
-        self._cli = googlemaps.Client(key="AIzaSyCehm2J69ZTy8Z-10FwDDgVZb5l0k0PFEE")
+        self._cli = googlemaps.Client(
+            key="AIzaSyCehm2J69ZTy8Z-10FwDDgVZb5l0k0PFEE")
         self._street_address = None
         self._last_turn = None
 
@@ -26,7 +28,10 @@ class TurnSignalAnalyzer(threading.Thread):
             if Geometry._pos is None:
                 continue
             lat, lng = Geometry._pos
-            Sensors.get_last(lambda obj : obj['name'] == 'steering_wheel_angle',  wheel_rot, max_age = 1)
+            Sensors.get_last(
+                lambda obj: obj['name'] == 'steering_wheel_angle',
+                wheel_rot,
+                max_age=1)
             if wheel_rot:
                 wheel_rot = wheel_rot[0]['value']
                 if abs(wheel_rot) > 75 or self._street_address is None:
@@ -34,8 +39,9 @@ class TurnSignalAnalyzer(threading.Thread):
 
             if self._last_turn is not None and time.time() - self._last_turn < 3:
                 address = self._street_address
-                try: # Haults (stucks) after quota of 2500 lookups per day.
-                    response = self._cli.reverse_geocode((lat, lng), result_type = "route")
+                try:  # Haults (stucks) after quota of 2500 lookups per day.
+                    response = self._cli.reverse_geocode(
+                        (lat, lng), result_type="route")
                     response = response[0]
                     for line in response['address_components']:
                         if 'route' in line['types']:
@@ -49,9 +55,12 @@ class TurnSignalAnalyzer(threading.Thread):
                 elif address != self._street_address:
                     self._street_address = address
                     signaled = []
-                    Sensors.get_data(lambda e : e['name'] == 'turn_signals', signaled, max_age=12)
+                    Sensors.get_data(
+                        lambda e: e['name'] == 'turn_signals',
+                        signaled,
+                        max_age=12)
                     signaled = [e for e in signaled if e['value'] != 'off']
                     if not signaled:
                         self._event.set()
-                        Distributor.analyzes.put( {'name' : 'forgot_signals', 'value' : 1,
-                            'timestamp' : Geometry._time} )
+                        Distributor.analyzes.put({'name': 'forgot_signals', 'value': 1,
+                                                  'timestamp': Geometry._time})
