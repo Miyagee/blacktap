@@ -48,6 +48,10 @@ class TurnSignalAnalyzer(threading.Thread):
                     self._street_address = address
                 elif address != self._street_address:
                     self._street_address = address
-                    self._event.set()
-                    Distributor.analyzes.put( {'name' : 'forgot_signals', 'value' : 1,
-                        'timestamp' : Geometry._time} )
+                    signaled = []
+                    Sensors.get_data(lambda e : e['name'] == 'turn_signals', signaled, max_age=12)
+                    signaled = [e for e in signaled if e['value'] != 'off']
+                    if not signaled:
+                        self._event.set()
+                        Distributor.analyzes.put( {'name' : 'forgot_signals', 'value' : 1,
+                            'timestamp' : Geometry._time} )
