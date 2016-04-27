@@ -9,8 +9,9 @@ import time
 
 class GUI(Tk):
 
-    def __init__(self):
+    def __init__(self, continue_running):
         super(GUI, self).__init__()
+        self._continue_running = continue_running
         self._width = 550
         self._height = 900
 
@@ -101,6 +102,9 @@ class GUI(Tk):
         self._turn_signal_sym.draw()
         self._speed_limit_sym.draw()
         self._evaluate_box.draw()
+        if not self._continue_running():
+            self.destroy()
+            exit(1)
         self.after(20, self._update_symbols)
 
 if __name__ == '__main__':

@@ -8,7 +8,7 @@ from geometry import Geometry
 class AggressiveAnalyzer(threading.Thread):
 
     def __init__(self, event):
-        super(AggressiveAnalyzer, self).__init__()
+        super(AggressiveAnalyzer, self).__init__(daemon=True)
 
         self._event = event
         self._frequency = 2  # times per second

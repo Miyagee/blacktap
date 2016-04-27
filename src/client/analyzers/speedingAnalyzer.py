@@ -8,7 +8,7 @@ from geometry import Geometry
 class SpeedingAnalyzer(threading.Thread):
 
     def __init__(self, event):
-        super(SpeedingAnalyzer, self).__init__()
+        super(SpeedingAnalyzer, self).__init__(daemon = True)
 
         self._event = event
         self._frequency = 2

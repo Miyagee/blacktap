@@ -10,7 +10,7 @@ import logging
 class TurnSignalAnalyzer(threading.Thread):
 
     def __init__(self, event):
-        super(TurnSignalAnalyzer, self).__init__()
+        super(TurnSignalAnalyzer, self).__init__(daemon=True)
 
         self._event = event
         self._frequency = 1

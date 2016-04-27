@@ -14,7 +14,7 @@ class Green(threading.Thread):
     def __init__(self, sleep_duration, event):
         print('Initializing')
         self.event = event
-        threading.Thread.__init__(self, target=None, args=None)
+        threading.Thread.__init__(self, target=None, args=None, daemon=True)
         self.queue = Distributor.analyzes
         self.sleep_duration = sleep_duration
         self.lastGearEvaluate = (None, 'asd')
