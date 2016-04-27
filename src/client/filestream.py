@@ -9,8 +9,7 @@ import time
 class FileStream(threading.Thread):
 
     def __init__(self, filename, address):
-        super(FileStream, self).__init__()
-        self.daemon = True
+        super(FileStream, self).__init__(daemon=True)
 
         self._data_file = open(filename, 'r')
         self._socket_address = address
@@ -52,8 +51,11 @@ class FileStream(threading.Thread):
 if __name__ == '__main__':
     while True:
         try:
+            #f = FileStream(
+            #    "../../gen_data/downtown-east2_only_turn_sigs_speed_lims.json",
+            #    'data_stream.sock').join()
             f = FileStream(
-                "../../gen_data/downtown-east2_only_turn_sigs_speed_lims.json",
+                "../../gen_data/mini_test.json",
                 'data_stream.sock').join()
             break
             #f = FileStream('downtown-east2.json', 'data_stream.sock').join()

@@ -16,8 +16,7 @@ class Receiver(threading.Thread):
         return time.time() - Receiver.real_start - (t - Receiver.virt_start)
 
     def __init__(self, addr):
-        super(Receiver, self).__init__()
-        self.daemon = True
+        super(Receiver, self).__init__(daemon = True)
         self._receive = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)
         self._socket_address = addr
         self.start()

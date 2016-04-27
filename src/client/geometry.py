@@ -21,7 +21,7 @@ class Geometry(threading.Thread):
     _fix_a = 0
 
     def __init__(self):
-        super(Geometry, self).__init__()
+        super(Geometry, self).__init__(daemon=True)
         self._last_time = None
         self._last_stamp = None
         self._step_size = 1

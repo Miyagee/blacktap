@@ -49,23 +49,22 @@ class Main:
         self._evaluatebox_last_time = None
 
         if USE_GUI:
-            self._gui = GUI()
+            self._gui = GUI(self._receiver.is_alive)
 
-            t = threading.Thread(target=self._mainloop)
+            t = threading.Thread(target=self._mainloop, daemon=True)
             t.daemon = True
             t.start()
 
         if UPLOAD:
             self._distributor = Distributor(
                 'upload_stream.sock', self._send_frequency)
-            s = threading.Thread(target=self._sender)
-            s.daemon = True
+            s = threading.Thread(target=self._sender, daemon=True)
             s.start()
 
         if USE_GUI:
             self._gui.mainloop()
         else:
-            self._stream.join()  # keep main from exiting
+            self._receiver.join()  # keep main from exiting
 
     def _mainloop(self):
         while True:
