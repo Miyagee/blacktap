@@ -1,0 +1,98 @@
+.numCounter {
+  display: inline-block;
+  height: 70px;
+  line-height: 70px;
+  color: #F1F1F1;
+  text-shadow: 0 0 2px #fff;
+  font-weight: bold;
+  white-space: normal;
+  font-size: 46.66667px;
+}
+.numCounter > b {
+  display: inline-block;
+  width: 50px;
+  height: 100%;
+  margin: 0 0.1em;
+  border-radius: 8px;
+  background: #191919;
+  text-align: center;
+  box-shadow: 1px 1px rgba(255, 255, 255, 0.05), 1px 1px 5px #111 inset;
+  overflow: hidden;
+}
+.numCounter > b:before {
+  content: ' 0 1 2 3 4 5 6 7 8 9 ';
+  display: block;
+  word-break: break-all;
+  word-break: break-word;
+  -webkit-transition: 0.4s cubic-bezier(0.12, 0.78, 0.52, 1.2);
+  transition: 0.4s cubic-bezier(0.12, 0.78, 0.52, 1.2);
+}
+.numCounter > b.d1:before {
+  margin-top: -70px;
+}
+.numCounter > b.d2:before {
+  margin-top: -140px;
+}
+.numCounter > b.d3:before {
+  margin-top: -210px;
+}
+.numCounter > b.d4:before {
+  margin-top: -280px;
+}
+.numCounter > b.d5:before {
+  margin-top: -350px;
+}
+.numCounter > b.d6:before {
+  margin-top: -420px;
+}
+.numCounter > b.d7:before {
+  margin-top: -490px;
+}
+.numCounter > b.d8:before {
+  margin-top: -560px;
+}
+.numCounter > b.d9:before {
+  margin-top: -617px;
+}
+.numCounter > span {
+  display: inline-block;
+  font-size: 1.1em;
+  opacity: 0.4;
+  line-height: 1.8;
+  padding: 0;
+  vertical-align: top;
+  text-shadow: none;
+}
+
+.numCounter {
+  overflow: hidden;
+  position: absolute;
+  width: 480px;
+  height: 115px;
+  margin: auto;
+/*  left: 0;
+  top: 0;
+  right: 0;
+  bottom: 0;*/
+  padding: 0.5em .1em;
+  text-align: center;
+  background: #222;
+  background: -webkit-linear-gradient(top, #555 1%, #333 4%, #1a1a1a 98%, #000 100%);
+  background: linear-gradient(to bottom, #555 1%, #333 4%, #1a1a1a 98%, #000 100%);
+  border-radius: 12px;
+  box-shadow: 0 5px 12px #111, 0 0 8px 0 rgba(255, 255, 255, 0.1) inset;
+}
+.numCounter:before {
+  content: '';
+  position: absolute;
+  left: -10%;
+  right: -10%;
+  top: -50%;
+  bottom: 50%;
+  background: #FFF;
+  opacity: 0.04;
+  z-index: 1;
+  -webkit-transform: rotatez(-5deg);
+          transform: rotatez(-5deg);
+}
+
