@@ -22,13 +22,16 @@ class Receiver(threading.Thread):
 
     def run(self):
         self._receive.connect(self._socket_address)
+        buf = ""
         while True:
             payload = self._receive.recv(4096 * 4).decode('utf-8')
             for obj in payload.strip().split("\n"):
                 try:
-                    obj = json.loads(obj)
+                    obj = json.loads(buf + obj)
+                    buf = ""
                 except ValueError:
                     print("ERROR: " + obj)
+                    buf += obj
                     continue
                 if Receiver.virt_start is None:
                     Receiver.virt_start = obj['timestamp']
