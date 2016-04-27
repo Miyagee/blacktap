@@ -24,9 +24,9 @@ class GUI(Tk):
         self._canvas.pack()
 
         self._speed_limit_sym = VibratingBox((275, 175), Image.open(
-            "resources/speed_limit_symbol.jpg"), self._canvas)
+            "src/client/resources/speed_limit_symbol.jpg"), self._canvas)
         self._turn_signal_sym = VibratingBox((100, 175), Image.open(
-            "resources/turn_signal_symbol.jpg"), self._canvas)
+            "src/client/resources/turn_signal_symbol.jpg"), self._canvas)
         self._evaluate_box = EvaluateBox((450, 175), self._canvas)
         self._marker = None
         self._marker_id = None
@@ -55,15 +55,15 @@ class GUI(Tk):
         self._thumbs = val
 
     def set_speed_limit(self, speed):
-        img = Image.open("resources/speed_limit_symbol.jpg")
+        img = Image.open("src/client/resources/speed_limit_symbol.jpg")
         draw = ImageDraw.Draw(img)
         speed = str(speed)
         if len(speed) == 2:
             draw.text((40, 50), str(speed), font=ImageFont.truetype(
-                'resources/sansation.ttf', 60), fill="black")
+                'src/client/resources/sansation.ttf', 60), fill="black")
         elif len(speed) == 3:
             draw.text((35, 50), str(speed), font=ImageFont.truetype(
-                'resources/sansation.ttf', 55), fill="black")
+                'src/client/resources/sansation.ttf', 55), fill="black")
         self._speed_limit_sym._image = img
         self._speed_limit_sym._image_tk = ImageTk.PhotoImage(
             self._speed_limit_sym._image)
@@ -82,7 +82,7 @@ class GUI(Tk):
             mapimg = self._map[self._coords[0],
                                self._coords[1]].crop((0, 50, 500, 450))
         else:
-            mapimg = Image.open("resources/logo.jpg")
+            mapimg = Image.open("src/client/resources/logo.jpg")
         self._map_img.paste(mapimg, (1, 1))
         self._map_tk = ImageTk.PhotoImage(self._map_img)
         if self._map_id is None:

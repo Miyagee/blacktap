@@ -14,19 +14,20 @@ import numpy as np
 import threading
 import time
 from queue import Queue
+import argparse
 
 
 class Main:
 
     def __init__(self, UPLOAD=True, USE_GUI=True, USE_FILESTREAM=False):
-        self._socket_address = 'data_stream.sock'
+        self._socket_address = 'src/client/data_stream.sock'
         self._receiver = Receiver(self._socket_address)
         self._geo_listen = Geometry()
         self._frequency = 15
 
         if USE_FILESTREAM:
             self._stream = FileStream(
-                "../../gen_data/downtown-east2_only_turn_sigs_speed_lims.json",
+                "gen_data/downtown-east2_only_turn_sigs_speed_lims.json",
                 self._socket_address)
 
         self._send_frequency = 1
@@ -57,7 +58,7 @@ class Main:
 
         if UPLOAD:
             self._distributor = Distributor(
-                'upload_stream.sock', self._send_frequency)
+                '/src/client/upload_stream.sock', self._send_frequency)
             s = threading.Thread(target=self._sender, daemon=True)
             s.start()
 
@@ -124,4 +125,23 @@ class Main:
             sleep(1 / self._send_frequency)
 
 if __name__ == '__main__':
-    m = Main(UPLOAD=False, USE_GUI=True)
+    parser = argparse.ArgumentParser()
+    # -gui USE_GUI -fs USE_FILESTREAM -u USE_UPLOAD
+    parser.add_argument('-gui', '--use_gui', help="USE_GUI [bool]")
+    parser.add_argument(
+        '-fs',
+        '--use_filestream',
+        help="USE_FILESTREAM [bool]")
+    parser.add_argument('-u', '--use_upload', help="USE_UPLOAD [bool]")
+    args = parser.parse_args()
+
+    use_gui = True
+    use_upload = True
+    use_filestream = True
+    if args.use_gui is not None:
+        use_gui = args.use_gui in ('1', 'True', 'true')
+    if args.use_filestream is not None:
+        use_filestream = args.use_filestream in ('1', 'True', 'true')
+    if args.use_upload is not None:
+        use_upload = args.use_upload in ('1', 'True', 'true')
+    m = Main(UPLOAD=use_upload, USE_GUI=use_gui, USE_FILESTREAM=use_filestream)

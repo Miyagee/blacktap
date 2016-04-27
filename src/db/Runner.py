@@ -36,7 +36,7 @@ class Runner(object):
         """
 
         # Setting up a class object and connecting.
-        unix_reader = UNIXReader("./../client/upload_stream.sock")
+        unix_reader = UNIXReader("src/client/upload_stream.sock")
         unix_reader.connect()
 
         # Data parser class object to parse receieved data
