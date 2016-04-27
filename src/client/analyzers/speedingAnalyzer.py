@@ -79,4 +79,4 @@ class SpeedingAnalyzer(threading.Thread):
         # self._points.clear()
 
     def is_speeding(self, velocity, limit):
-        return velocity >= limit + 10
+        return velocity >= limit + 5

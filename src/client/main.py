@@ -111,8 +111,9 @@ class Main:
                 self._speed_limit = self._speeding_event.speed_limit
                 self._gui.set_speed_limit(self._speed_limit)
             if self._speeding_event.is_set():
+                offset = 3
                 self._gui._speed_limit_sym.set_vibrate(
-                    10 * self._speeding_event.speeding_percentage)
+                    offset + (10 - offset) * self._speeding_event.speeding_percentage)
                 self._speeding_event.clear()
                 self._speed_time = time.time()
             elif self._speed_time is not None and time.time() - self._speed_time > 2:
