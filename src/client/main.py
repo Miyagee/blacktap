@@ -16,12 +16,14 @@ import time
 from queue import Queue
 
 class Main:
-    def __init__(self, UPLOAD = True, USE_GUI = True):
+    def __init__(self, UPLOAD=True, USE_GUI=True, USE_FILESTREAM=False):
         self._socket_address = 'data_stream.sock'
-        self._stream = FileStream("../../gen_data/downtown-east2_only_turn_sigs_speed_lims.json", self._socket_address)
         self._receiver = Receiver(self._socket_address)
         self._geo_listen = Geometry()
         self._frequency = 15
+
+        if USE_FILESTREAM:
+            self._stream = FileStream("../../gen_data/downtown-east2_only_turn_sigs_speed_lims.json", self._socket_address)
 
         self._send_frequency = 1
         self._speed_limit = None
