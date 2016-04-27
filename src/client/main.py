@@ -117,4 +117,4 @@ class Main:
             sleep(1 / self._send_frequency)
 
 if __name__ == '__main__':
-    m = Main(UPLOAD = True)
+    m = Main(UPLOAD = False, USE_GUI = True)

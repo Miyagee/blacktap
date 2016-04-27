@@ -51,6 +51,7 @@ class Runner(object):
             data = unix_reader.revc_socket()
 
             json_data = json.loads(data)
+            print(json_data)
 
             #Parse the result data to appropriate format
             if json_data:
