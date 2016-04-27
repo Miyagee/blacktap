@@ -83,23 +83,20 @@ class Main:
             if self._last_turn_forget is not None and time.time() - self._last_turn_forget > 3:
                 self._gui._turn_signal_sym.set_vibrate(0)
 
-            if self._aggressive_event.is_set():
-                self._gui._evaluate_box.set_value(EvaluateBox.BAD)
-                self._evaluatebox_last_time = time.time()
-                self._aggressive_event.clear()
-
-            if self._evaluatebox_last_time is not None and time.time() - self._evaluatebox_last_time > 3:
-                self._gui._evaluate_box.set_value(EvaluateBox.GOOD)
-
-            if self._green_event.is_set():
-                if self._green_event.direction == 'up':
-                    self._gui._evaluate_box.set_value(EvaluateBox.GEAR_UP)
-                elif self._green_event.direction == 'down':
-                    self._gui._evaluate_box.set_value(EvaluateBox.GEAR_DOWN)
-                self._evaluatebox_last_time = time.time()
-                self._green_event.clear()
-            elif self._green_event.direction == 'none':
-                self._gui._evaluate_box.set_value(EvaluateBox.GOOD)
+            if self._evaluatebox_last_time is None or time.time() - self._evaluatebox_last_time > 3:
+                if self._aggressive_event.is_set():
+                    self._gui._evaluate_box.set_value(EvaluateBox.BAD)
+                    self._evaluatebox_last_time = time.time()
+                    self._aggressive_event.clear()
+                elif self._green_event.is_set():
+                    if self._green_event.direction == 'up':
+                        self._gui._evaluate_box.set_value(EvaluateBox.GEAR_UP)
+                    elif self._green_event.direction == 'down':
+                        self._gui._evaluate_box.set_value(EvaluateBox.GEAR_DOWN)
+                    self._evaluatebox_last_time = time.time()
+                    self._green_event.clear()
+                else:
+                    self._gui._evaluate_box.set_value(EvaluateBox.GOOD)
 
             if self._speed_limit != self._speeding_event.speed_limit:
                 self._speed_limit = self._speeding_event.speed_limit
