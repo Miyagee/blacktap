@@ -1,0 +1,16 @@
+* {
+  margin: 0;
+  padding: 0;
+}
+table {
+	width: 100%;
+}
+tr {
+	width:50%;
+}
+.row_bottom{
+	width:40%;
+}
+.row{
+	width:60%;
+}
