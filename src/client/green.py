@@ -7,6 +7,7 @@ from time import sleep
 import numpy as np
 import threading
 
+
 class Green(threading.Thread):
     """This class is used to calculate current fuel usage, if the user is driving green and some other stuff."""
 
@@ -22,8 +23,14 @@ class Green(threading.Thread):
         print('Start!')
         self.start()
 
-    def _evaluateGearChange(self, engine_speed, current_gear, vehicle_speed, timestamp):
-        print('Engine speed: %r\t Current gear: %r\t Vehicle speed: %r' % (engine_speed, current_gear, vehicle_speed))
+    def _evaluateGearChange(
+            self,
+            engine_speed,
+            current_gear,
+            vehicle_speed,
+            timestamp):
+        print('Engine speed: %r\t Current gear: %r\t Vehicle speed: %r' %
+              (engine_speed, current_gear, vehicle_speed))
         if vehicle_speed > 1:
             if engine_speed > 2000:
                 self.event.direction = 'up'
@@ -40,37 +47,56 @@ class Green(threading.Thread):
                     self.lastGearEvaluate = (None, timestamp)
                 self.event.direction = 'none'
             if self.lastGearEvaluate[0] is not None:
-                self.queue.put({'name':'gear_suggestion', 'value':self.lastGearEvaluate[0], 'timestamp':timestamp})
+                self.queue.put({'name': 'gear_suggestion',
+                                'value': self.lastGearEvaluate[0],
+                                'timestamp': timestamp})
 
     def run(self):
-        sleep(5*self.sleep_duration)
+        sleep(5 * self.sleep_duration)
         fuel_data = []
         distance_data = []
         engine_speed_data = []
         gear_data = []
         vehicle_speed_data = []
 
-        Sensors.get_last(lambda obj: obj['name'] == 'fuel_consumed_since_restart', fuel_data)
+        Sensors.get_last(
+            lambda obj: obj['name'] == 'fuel_consumed_since_restart',
+            fuel_data)
         Sensors.get_last(lambda obj: obj['name'] == 'odometer', distance_data)
 
         while True:
             sleep(self.sleep_duration)
-            Sensors.get_last(lambda obj: obj['name'] == 'fuel_consumed_since_restart', fuel_data)
-            Sensors.get_last(lambda obj: obj['name'] == 'odometer', distance_data)
-            Sensors.get_last(lambda obj: obj['name'] == 'engine_speed', engine_speed_data)
-            Sensors.get_last(lambda obj: obj['name'] == 'transmission_gear_position', gear_data)
-            Sensors.get_last(lambda obj: obj['name'] == 'vehicle_speed', vehicle_speed_data)
+            Sensors.get_last(
+                lambda obj: obj['name'] == 'fuel_consumed_since_restart',
+                fuel_data)
+            Sensors.get_last(
+                lambda obj: obj['name'] == 'odometer',
+                distance_data)
+            Sensors.get_last(
+                lambda obj: obj['name'] == 'engine_speed',
+                engine_speed_data)
+            Sensors.get_last(
+                lambda obj: obj['name'] == 'transmission_gear_position',
+                gear_data)
+            Sensors.get_last(
+                lambda obj: obj['name'] == 'vehicle_speed',
+                vehicle_speed_data)
             if gear_data and engine_speed_data and vehicle_speed_data:
-                self._evaluateGearChange(engine_speed_data[-1].get('value'), gear_data[-1].get('value'), vehicle_speed_data[-1].get('value'), vehicle_speed_data[-1].get('timestamp'))
+                self._evaluateGearChange(engine_speed_data[-1].get('value'), gear_data[-1].get(
+                    'value'), vehicle_speed_data[-1].get('value'), vehicle_speed_data[-1].get('timestamp'))
 
-            fuel_diff = fuel_data[-1].get('value') - fuel_data[-2].get('value') #difference between the two last measured fuel levels
-            distance_diff = distance_data[-1].get('value') - distance_data[-2].get('value')
+            # difference between the two last measured fuel levels
+            fuel_diff = fuel_data[-1].get('value') - fuel_data[-2].get('value')
+            distance_diff = distance_data[-1].get('value') - \
+                distance_data[-2].get('value')
 
             if distance_diff > 0:
                 fuel_usage_per_km = fuel_diff / distance_diff
             else:
                 fuel_usage_per_km = 0
-            self.queue.put({'name':'fuel_usage10', 'value':fuel_usage_per_km*10, 'timestamp':fuel_data[-1].get('timestamp')})
+            self.queue.put({'name': 'fuel_usage10',
+                            'value': fuel_usage_per_km * 10,
+                            'timestamp': fuel_data[-1].get('timestamp')})
 
 
 if __name__ == '__main__':

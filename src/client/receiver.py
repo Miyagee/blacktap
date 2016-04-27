@@ -4,10 +4,12 @@ import socket
 import time
 from sensors import Sensors
 
+
 class Receiver(threading.Thread):
 
     real_start = None
     virt_start = None
+
     def time_since(t):
         if Receiver.virt_start is None:
             return None

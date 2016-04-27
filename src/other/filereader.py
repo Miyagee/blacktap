@@ -7,6 +7,7 @@ import time
 from threading import Thread, RLock
 from collections import defaultdict as dd
 
+
 class FileReader(Thread):
 
     # Constructor
@@ -20,7 +21,7 @@ class FileReader(Thread):
 
         self.speed_up = 1.0
 
-        #For creating data subsets for test making:
+        # For creating data subsets for test making:
         self.record = False
         self.record_buffer = []
         self.record_index = 1
@@ -52,7 +53,11 @@ class FileReader(Thread):
         old_timestamp = None
 
         if self.add_speed_limits:
-            self.g = open(self.url[ : self.url.find(".json")] + "_speed_lims.json", "w")
+            self.g = open(
+                self.url[
+                    : self.url.find(".json")] +
+                "_speed_lims.json",
+                "w")
             self.g_buffer = []
 
         with open(self.url) as f:
@@ -84,10 +89,10 @@ class FileReader(Thread):
                 self.rewind = None
 
             if self.add_line:
-                self.line_indices.append( (i, self.add_line) )
+                self.line_indices.append((i, self.add_line))
                 self.add_line = None
 
-            if old_timestamp is None: # Initial case
+            if old_timestamp is None:  # Initial case
                 old_timestamp = json_data["timestamp"]
             old_timestamp = self.sleeper(json_data["timestamp"], old_timestamp)
 
@@ -102,8 +107,10 @@ class FileReader(Thread):
                     self.velocities = [e for e in self.velocities if 15 < e]
                     if self.velocities:
                         timestamp = json.loads(self.g_buffer[0])['timestamp']
-                        self.g.write(json.dumps( {'name' : 'speed_limit', 'value' : min(30, round(sorted(self.velocities)[len(self.velocities) // 2] / 10.0)*10), 'timestamp' : timestamp}) + "\n")
-                        print("wrote", min(30,round(sorted(self.velocities)[len(self.velocities) // 2] / 10.0)*10))
+                        self.g.write(json.dumps({'name': 'speed_limit', 'value': min(30, round(sorted(
+                            self.velocities)[len(self.velocities) // 2] / 10.0) * 10), 'timestamp': timestamp}) + "\n")
+                        print("wrote", min(30, round(sorted(self.velocities)[
+                              len(self.velocities) // 2] / 10.0) * 10))
                         for line in self.g_buffer:
                             self.g.write(line)
 
@@ -111,7 +118,8 @@ class FileReader(Thread):
                     self.velocities.clear()
 
             with self.lock:
-                self.results[json_data['name']].append( (json_data["value"], json_data["timestamp"]) )
+                self.results[json_data['name']].append(
+                    (json_data["value"], json_data["timestamp"]))
             i += 1
 
     def calculate_speed_limits(self):

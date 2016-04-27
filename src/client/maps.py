@@ -4,6 +4,7 @@ import requests
 from time import sleep
 import tkinter
 
+
 class Maps:
 
     def __init__(self):
@@ -28,9 +29,10 @@ class Maps:
         im4 = self.get_part(ind_lat + 1, ind_lng + 1)
 
         result.paste(im1, (int(-part_lng * 500), int(part_lat * 500)))
-        result.paste(im2, (int(-part_lng * 500), int(-(1-part_lat) * 500)))
-        result.paste(im3, (int((1-part_lng) * 500), int(part_lat * 500)))
-        result.paste(im4, (int((1-part_lng) * 500), int(-(1-part_lat) * 500)))
+        result.paste(im2, (int(-part_lng * 500), int(-(1 - part_lat) * 500)))
+        result.paste(im3, (int((1 - part_lng) * 500), int(part_lat * 500)))
+        result.paste(im4, (int((1 - part_lng) * 500),
+                           int(-(1 - part_lat) * 500)))
 
         return result
 
@@ -39,9 +41,9 @@ class Maps:
         if index in self.pieces:
             return self.pieces[index]
         else:
-            if not index in self.pending:
+            if index not in self.pending:
                 self.pending.add(index)
-                T = Thread(target = self.download, args = index)
+                T = Thread(target=self.download, args=index)
                 T.daemon = True
                 T.start()
             return Image.new("RGB", (500, 500), "white")
@@ -49,16 +51,18 @@ class Maps:
     def download(self, ind_lat, ind_lng):
         lat, lng = ind_lat * self.dlat, ind_lng * self.dlng
         response = requests.get(
-                "https://maps.googleapis.com/maps/api/staticmap?" + \
-                        "key=AIzaSyCehm2J69ZTy8Z-10FwDDgVZb5l0k0PFEE&" + \
-                        "center="+str(lat)+","+str(lng)+"&" + \
-                        "zoom=17&size=500x500")
+            "https://maps.googleapis.com/maps/api/staticmap?" +
+            "key=AIzaSyCehm2J69ZTy8Z-10FwDDgVZb5l0k0PFEE&" +
+            "center=" + str(lat) + "," + str(lng) + "&" +
+            "zoom=17&size=500x500")
         parser = ImageFile.Parser()
         parser.feed(response.content)
         self.pieces[(ind_lat, ind_lng)] = parser.close()
         self.pending.remove((ind_lat, ind_lng))
 
+
 class tester(tkinter.Tk):
+
     def __init__(self):
         super(tester, self).__init__()
 
@@ -67,7 +71,7 @@ class tester(tkinter.Tk):
         self.lat = 63.4176044
         self.lng = 10.4126962
 
-        self.canvas = tkinter.Canvas(self, width = 500, height=500)
+        self.canvas = tkinter.Canvas(self, width=500, height=500)
         self.canvas.pack()
 
         self.bind("<Key>", self.handle_key_press)
@@ -88,7 +92,7 @@ class tester(tkinter.Tk):
     def update(self):
         self.canvas.delete("all")
         self.photo_img = ImageTk.PhotoImage(self.map[self.lat, self.lng])
-        self.canvas.create_image(250, 250, image = self.photo_img)
+        self.canvas.create_image(250, 250, image=self.photo_img)
         self.after(50, self.update)
 
 if __name__ == '__main__':

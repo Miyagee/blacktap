@@ -4,8 +4,10 @@
 
 import time
 
+
 class DataParser():
-    #Empty contructor
+    # Empty contructor
+
     def __init__(self):
         self.first_timestamp = None
         self.first_time = None
@@ -21,5 +23,6 @@ class DataParser():
             self.first_timestamp = max(e['timestamp'] for e in list_of_dicts)
             self.first_time = time.time()
 
-        result['timestamp'] = self.first_timestamp + int(time.time() - self.first_time)
+        result['timestamp'] = self.first_timestamp + \
+            int(time.time() - self.first_time)
         return result
