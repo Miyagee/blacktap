@@ -27,6 +27,8 @@ class Receiver(threading.Thread):
         buf = ""
         while True:
             payload = self._receive.recv(4096 * 4).decode('utf-8')
+            if payload == "":
+                break
             for obj in payload.strip().split("\n"):
                 try:
                     obj = json.loads(buf + obj)
