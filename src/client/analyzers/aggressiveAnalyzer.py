@@ -49,7 +49,7 @@ class AggressiveAnalyzer(threading.Thread):
 
             acc_ped_pos = acc_ped_pos[0] if acc_ped_pos else None
             vehicle_speed = vehicle_speed[0] if vehicle_speed else None
-            if acc_ped_pos is not None:
+            if acc_ped_pos is not None and vehicle_speed is not None:
                 timestamp = acc_ped_pos["timestamp"]
                 ped_pos = acc_ped_pos['value']
                 speed = vehicle_speed['value']
