@@ -13,15 +13,16 @@ class EvaluateBox:
     def __init__(self, position, canvas):
         self._canvas = canvas
         self._good = ImageTk.PhotoImage(
-            Image.open("resources/thumbs_up_symbol.jpg"))
+            Image.open("src/client/resources/thumbs_up_symbol.jpg"))
 
         self._bad = ImageTk.PhotoImage(
-            Image.open("resources/thumbs_down_symbol.jpg"))
+            Image.open("src/client/resources/thumbs_down_symbol.jpg"))
 
-        self._gear_up = ImageTk.PhotoImage(Image.open("resources/gear_up.jpg"))
+        self._gear_up = ImageTk.PhotoImage(
+            Image.open("src/client/resources/gear_up.jpg"))
 
         self._gear_down = ImageTk.PhotoImage(
-            Image.open("resources/gear_down.jpg"))
+            Image.open("src/client/resources/gear_down.jpg"))
 
         self._value = EvaluateBox.GOOD
         self._position = position

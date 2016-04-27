@@ -3,6 +3,7 @@ import json
 import socket
 import time
 from sensors import Sensors
+import os
 
 
 class Receiver(threading.Thread):
@@ -43,4 +44,4 @@ class Receiver(threading.Thread):
                 Sensors(Sensors.insert_data, obj).join()
 
 if __name__ == '__main__':
-    r = Receiver('data_stream_sock').join()
+    r = Receiver('src/client/data_stream_sock').join()
